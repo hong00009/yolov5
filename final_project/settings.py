@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'yolov5_django',
+    'accounts',
+
     'bootstrap5',
 ]
 
@@ -121,9 +124,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 홍 / 하단 수정
+AUTH_USER_MODEL = 'accounts.User'
+
+# 업로드한 사진을 저장할 위치
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# 미디어 경로를 처리할 URL
+MEDIA_URL = '/media/'
+
+# 오류에 대한 대응 (You're using the staticfiles app without having set the STATIC_ROOT setting to a filesystem path.)
+# STATIC_ROOT = BASE_DIR / 'static'
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'cloneit' / 'static',
+# ]
+# STATIC_ROOT = ''
+STATIC_URL = '/static/'
+# STATICFILES_DIRS = ('static',)
