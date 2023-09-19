@@ -17,6 +17,8 @@ def upload_image(request):
         form = UploadImageForm()
     return render(request, 'yolov5_django/upload_image.html', {'form': form})
 
+
 def image_list(request):
     images = UploadedImage.objects.all()
     return render(request, 'yolov5_django/image_list.html', {'images': images})
+

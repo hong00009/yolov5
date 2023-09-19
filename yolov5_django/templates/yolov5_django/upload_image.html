@@ -2,14 +2,14 @@
 {% block content %}
 <html>
 <head>
-    <title>이미지 업로드</title>
+    <title>업로드한 이미지</title>
 </head>
 <body>
-    <h1>이미지 업로드</h1>
+    <h1>Image_upload</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">업로드</button>
+        <button type="submit">upload</button>
     </form>
 </body>
 </html>
