@@ -20,5 +20,5 @@ from yolov5_django import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('yolov5_django/', include('yolov5_django.urls')), 
+    path('', include('yolov5_django.urls')), 
 ]
