@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 <html>
-<head>
-    <title>Uploaded Image</title>
-</head>
-<body>
-    <h1>업로드 된 음식 리스트</h1>
-    <ul>
-        {% for image in images %}
-            <li>
-                <img src="{{ image.image.url }}" alt="{{ image.title }}">
-                {{ image.title }}
-            </li>
-        {% endfor %}
-    </ul>
-</body>
+        <body>
+            <h2>사용자가 업로드한 이미지</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+                {% for image in images %}
+                <div class="col">
+                    <div class="card">
+                        <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{image.title}}</h5>
+                        </div></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+        </body>
 </html>
 
 {% endblock %}
