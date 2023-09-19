@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<html>
+<head>
+    <title>이미지 목록</title>
+</head>
+<body>
+    <h1>이미지 목록</h1>
+    <ul>
+        {% for image in images %}
+            <li>
+                <img src="{{ image.image.url }}" alt="{{ image.title }}">
+                {{ image.title }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+{% endblock %}
