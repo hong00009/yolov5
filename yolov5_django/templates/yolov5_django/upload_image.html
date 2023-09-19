@@ -2,10 +2,10 @@
 {% block content %}
 <html>
 <head>
-    <title>업로드한 이미지</title>
+    <title>Image upload</title>
 </head>
 <body>
-    <h1>Image_upload</h1>
+    <h1>음식 사진을 업로드 하세요.</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
