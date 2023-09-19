@@ -13,12 +13,24 @@ class UploadedImage(models.Model):
         return self.title
 
 class FoodNutrition(models.Model):
-    food_name = models.CharField(max_length=255)
-    calories = models.FloatField()
-    carbohydrates = models.FloatField()
-    fat = models.FloatField()
-    protein = models.FloatField()
-    # 다른 필요한 필드 추가 가능
+    class_index = models.IntegerField() # 클래스 0~399
+    category = models.CharField(max_length=255) # 카테고리
+    food_name = models.CharField(max_length=255) # 음식이름
+    code = models.CharField(max_length=255) # 코드 01-011-001
+    weight = models.FloatField() # 중량
+    energy = models.FloatField() # 열량
+    carbohydrate = models.FloatField() # 탄수화물
+    protein = models.FloatField() # 단백질
+    fat = models.FloatField() # 지방
+    sodium = models.FloatField() # 나트륨
+    saccharide = models.FloatField() #당류
+    calcium = models.FloatField() # 칼슘
+    phosphorus = models.FloatField() # 인
+    potassium = models.FloatField() # 칼륨
+    magnesium = models.FloatField() # 마그네슘
+    iron = models.FloatField() # 철
+    zinc = models.FloatField()# 아연
+    cholesterol = models.FloatField() # 콜레스테롤
 
     def __str__(self):
         return self.food_name
