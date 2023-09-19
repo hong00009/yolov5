@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{% url 'yolov5_django:index' %}">
       <i class="fa-solid fa-house"></i>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -9,8 +9,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link" href="#">회원가입</a>
-        <a class="nav-link" href="#">로그인</a>
+        <a class="nav-link" href="{% url 'accounts:login' %}">로그인</a>
+        <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>
       </div>
     </div>
   </div>
