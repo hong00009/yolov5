@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<html>
-<head>
-    <title>Image upload</title>
-</head>
-<body>
-    <h1>음식 사진을 업로드 하세요.</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">upload</button>
-    </form>
-</body>
-</html>
+
+<h1>음식 사진을 업로드 하세요.</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">upload</button>
+</form>
+
 
 {% endblock %}
