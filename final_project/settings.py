@@ -134,12 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 홍 / 하단 수정
 AUTH_USER_MODEL = 'accounts.User'
 
-# 업로드한 사진을 저장할 위치
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# 미디어 경로를 처리할 URL
-MEDIA_URL = '/media/'
-
 # 오류에 대한 대응 (You're using the staticfiles app without having set the STATIC_ROOT setting to a filesystem path.)
 # STATIC_ROOT = BASE_DIR / 'static'
 

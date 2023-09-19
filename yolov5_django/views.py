@@ -12,7 +12,7 @@ def upload_image(request):
         form = UploadImageForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('image_list')  # 이미지 목록 페이지로 리디렉션
+            return redirect('yolov5_django:image_list')  # 이미지 목록 페이지로 리디렉션
     else:
         form = UploadImageForm()
     return render(request, 'yolov5_django/upload_image.html', {'form': form})
