@@ -1,10 +1,12 @@
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "final_project.settings")
+
 import django
 django.setup()
 
 import csv
 from yolov5_django.models import FoodNutrition
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "final_project.settings")
+
 
 
 # CSV 파일 경로
