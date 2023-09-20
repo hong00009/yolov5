@@ -11,7 +11,7 @@
             </a>
             <div class="card-body">
                 <h5 class="card-title">{{ image.title }}</h5>
-
+                <p>Uploaded on: {{ image.uploaded_at|date:"Y-m-d H:i:s" }}</p> 
             </div>
             <a href="{% url 'yolov5_django:edit_image' image.id %}">Edit</a>
             <a href="{% url 'yolov5_django:delete_image' image.id %}">Delete</a>
