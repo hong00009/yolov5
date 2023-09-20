@@ -43,7 +43,15 @@ INSTALLED_APPS = [
     'accounts',
 
     'bootstrap5',
+<<<<<<< HEAD
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> 98000a749257ad6bf1db3d08463dea0e11dfd2d4
+=======
+
+>>>>>>> 98000a749257ad6bf1db3d08463dea0e11dfd2d4
 ]
 
 MIDDLEWARE = [
