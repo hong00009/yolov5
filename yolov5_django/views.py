@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UploadImageForm, EditImageForm
 from .models import UploadedImage
 from django.contrib.auth.decorators import login_required
+from .models import FoodNutrition
 # Create your views here.
 
 def index(request):
@@ -57,3 +58,11 @@ def delete_image(request, image_id):
         return redirect('yolov5_django:image_list')
 
     return render(request, 'yolov5_django/delete_image.html', {'image': image})
+
+def chart(request):
+    nutris = FoodNutrition.objects.all()
+
+    context = {
+        'nutris' : nutris,
+    }
+    return render(request, 'yolov5_django/chart.html', context)

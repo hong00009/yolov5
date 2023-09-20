@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <h3>test</h3>
+      <hr />
+    </div>
+    <div class="col-md-8">
+      <div>
+        <canvas id="myChart"></canvas>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <script>
+        const ctx = document.getElementById('myChart')
+        
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: [{% for n in nutris %} '{{n.food_name}}', {% endfor %}],
+            datasets: [
+              {
+                label: 'energy(kcal)',
+                data: [{% for n in nutris %} '{{n.energy}}', {% endfor %}],
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        })
+      </script>
+    </div>
+  </div>
+{% endblock %}
