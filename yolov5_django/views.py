@@ -37,7 +37,7 @@ def upload_image(request):
 @login_required
 def image_list(request):
     form = DateRangeFilterForm(request.GET)
-    images = UploadedImage.objects.all()
+    images = UploadedImage.objects.filter(user=request.user)
 
     # 사용자가 날짜 범위를 선택한 경우
     if form.is_valid():
