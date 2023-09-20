@@ -14,9 +14,9 @@ class UploadedImage(models.Model):
 
 class FoodNutrition(models.Model):
     class_index = models.IntegerField() # 클래스 0~399
-    category = models.CharField(max_length=255) # 카테고리
-    food_name = models.CharField(max_length=255) # 음식이름
+    category = models.CharField(max_length=255) # 분류
     code = models.CharField(max_length=255) # 코드 01-011-001
+    food_name = models.CharField(max_length=255) # 음식이름
     weight = models.FloatField() # 중량
     energy = models.FloatField() # 열량
     carbohydrate = models.FloatField() # 탄수화물
