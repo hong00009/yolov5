@@ -89,3 +89,8 @@ def chart(request):
     }
     return render(request, 'yolov5_django/chart.html', context)
   
+
+
+
+
+
