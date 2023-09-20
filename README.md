@@ -1,6 +1,6 @@
 ## 목차
 
-1.git-clone
+1. git-clone
 
 2. 폴더 생성 확인 
 
@@ -13,8 +13,7 @@
 6. Pull Request
  
 
-
-1. git-clone
+### 1. git-clone
 
 -repository에서 Code 클릭
 
@@ -34,14 +33,14 @@ git-clone "url"
 - 로컬에 팀원 분의 repository를 불러오는 작업
 
 
-2. 폴더 생성 확인 
+### 2. 폴더 생성 확인 
 
 - 작업물까지 같이 들어온 것을 확인 가능하다.
 
 - vscode 해당 폴더로 열어주기
  
 
-3. 브랜치 생성 
+### 3. 브랜치 생성 
 
 팀원들이 각각, 파일을 올리는 공간을 생성해주는 것이다.
 
@@ -57,14 +56,14 @@ git branch "branch이름"
 
 github repository에서 4개의 branch가 생성된 걸 확인 가능합니다.
  
-4. 브랜치 전환
+### 4. 브랜치 전환
 
 git switch "branch이름"
 
 ex) git switch main
  
 
-5. local에서 remote로 파일 업로드
+### 5. local에서 remote로 파일 업로드
 
 git add .
 
@@ -99,7 +98,7 @@ git push origin "branch이름"
 branch 이름: 아까 설정한 곳으로 push할 것이다.
 
 
-6. Pull Request
+### 6. Pull Request
 
 ※ 터미널에서 push 후, github repository 페이지로 돌아와서 진행
 
