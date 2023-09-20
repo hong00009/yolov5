@@ -3,6 +3,7 @@ from .forms import UploadImageForm, EditImageForm
 from .models import UploadedImage
 from django.contrib.auth.decorators import login_required
 from .models import FoodNutrition
+<<<<<<< HEAD
 from uuid import uuid4 # 고유번호 생성
 from . import yolo_detect
 
@@ -11,6 +12,8 @@ from django.conf import settings
 
 import os
 from django.core.files.storage import FileSystemStorage
+=======
+>>>>>>> 98000a749257ad6bf1db3d08463dea0e11dfd2d4
 from datetime import datetime 
 # Create your views here.
 
