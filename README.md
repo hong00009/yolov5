@@ -119,12 +119,12 @@ branch 이름: 아까 설정한 곳으로 push할 것이다.
 
 이것은 pull과 동시에 merge를 해주는 명령어다.
 
-그래서 github 협업은 처음이니 꼬일까봐 merge를 하지 않는 pull request를 사용하기로 했다.
+그래서 github 협업은 처음이니 꼬일까봐 merge를 하지 않는 pull request를 사용
 
  
 해당 repository로 가서, 맨 오른쪽에 New PullRequest 클릭!
 
-"branch → main우로 merge하기 전에 code-review 해주세요!!"
+"branch → main으로 merge하기 전에 code-review 해주세요!!"
 
 → merge가 되지 않고, 일단 Pull request에 올라간다.
 
