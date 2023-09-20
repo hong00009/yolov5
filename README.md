@@ -81,20 +81,18 @@ git add .
  git commit -sm "Update : test"
 ```
 
+s 옵션은 서명을 포함하는 옵션
+
 -아직 local 환경에만 있는 상태
 
-```sh
-git commit 다음의 메시지는 convention
-```
-
-(팀원들끼리 규칙을 정해서, commit message를 정한다.)
+git commit 다음의 메시지는 convention (팀원들끼리 규칙을 정해서, commit message를 정한다.)
 
 
 repository 연결하기
 
 - repository를 만든 팀원에게 invite메일 보내달라고 요청하기
 
-github 협업시, 아무나 repository에 파일을 올리면 안되므로,권한 요청을 해야합니다
+github 협업시, 아무나 repository에 파일을 올리면 안되므로, 권한 요청을 해야합니다
 
 (fork 떠서, clone하는 방법은 상관없다고 합니다)
 
