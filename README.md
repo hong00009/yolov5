@@ -12,7 +12,7 @@
 
 6. Pull Request
  
-
+---
 ### 1. git-clone
 
 -repository에서 Code 클릭
