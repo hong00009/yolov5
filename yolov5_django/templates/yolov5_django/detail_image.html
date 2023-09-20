@@ -4,6 +4,14 @@
   <h1>{{ image.title }}</h1>
   <p>업로드한 이미지</p>
   <img src="{{ image.image.url }}" alt="{{ image.title }}">
+  <p>Uploaded on: {{ image.uploaded_at|date:"Y-m-d H:i:s" }}</p> 
+  
   <!-- 기타 게시글 정보 표시 -->
   <a href="{% url 'yolov5_django:image_list' %}">작성글 보기</a>
+
+  <div>
+    <img class="image" src="{{image}}"  width="400" height="400"/>
+  </div>
+
+
 {% endblock %}
