@@ -15,16 +15,18 @@
 ---
 ### 1. git-clone
 
--repository에서 Code 클릭
+- 깃허브 repository에서 Code 초록버튼 클릭
 
 - url 복사
 
 - vscode 터미널 열기 
 
 
- 적절한 위치를 경로로 하고, 터미널에
+적절한 위치를 경로로 하고, 터미널에
 
-git-clone "url"
+```sh
+git clone "url"
+```
 
 ※ git-clone시 자동으로 폴더가 생성되므로, 따로 폴더는 만들지 않아도 됩니다.
 
