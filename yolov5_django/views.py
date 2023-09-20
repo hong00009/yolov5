@@ -3,6 +3,7 @@ from .forms import UploadImageForm, EditImageForm
 from .models import UploadedImage
 from django.contrib.auth.decorators import login_required
 from .models import FoodNutrition
+from datetime import datetime 
 # Create your views here.
 
 def index(request):
@@ -15,6 +16,7 @@ def upload_image(request):
         if form.is_valid():
             image = form.save(commit=False)
             image.user = request.user  # 현재 로그인한 사용자 설정
+            image.uploaded_at = datetime.now() # 현재 날짜와 시간 저장
             image.save()
             return redirect('yolov5_django:detail_image', image_id=image.id)
     else:
@@ -27,6 +29,7 @@ def upload_image(request):
 @login_required
 def image_list(request):
     images = UploadedImage.objects.filter(user=request.user)
+
     context = {
         'images': images,
     }
