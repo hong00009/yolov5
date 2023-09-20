@@ -1,22 +1,14 @@
-목차
+## 목차
 
 1.git-clone
 
 2. 폴더 생성 확인 
 
-3. 브랜치 생성 
+3. 브랜치 생성  git branch "브랜치이름"
 
-git branch "브랜치이름"
+4. 브랜치 전환 git switch "branch이름" (master > branch이름으로 변경됨)
 
-4. 브랜치 전환
-
-git switch "branch이름"
-
-(master > branch이름으로 변경됨)
-
-5. local에서 remote로 파일 업로드
-
-(git add, commit, push)
+5. local에서 remote로 파일 업로드 (git add, commit, push)
 
 6. Pull Request
  
