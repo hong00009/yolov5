@@ -2,6 +2,12 @@
 {% block content %}
 
 <h2>사용자가 업로드한 이미지</h2>
+{% if user.is_authenticated %}
+<form method="GET">
+{{ form.as_p }}
+<button type="submit">Filter</button>
+</form>
+
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
     {% for image in images %}
     <div class="col">
@@ -19,6 +25,6 @@
     </div>
     {% endfor %}
 </div>
-            
+{% endif %}            
 
 {% endblock %}

@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UploadImageForm, EditImageForm
+from .forms import UploadImageForm, EditImageForm, DateRangeFilterForm
 from .models import UploadedImage
 from django.contrib.auth.decorators import login_required
 from .models import FoodNutrition
-<<<<<<< HEAD
 from uuid import uuid4 # 고유번호 생성
 from . import yolo_detect
 
@@ -12,9 +11,7 @@ from django.conf import settings
 
 import os
 from django.core.files.storage import FileSystemStorage
-=======
->>>>>>> 98000a749257ad6bf1db3d08463dea0e11dfd2d4
-from datetime import datetime 
+from datetime import datetime, timedelta
 # Create your views here.
 
 def index(request):
@@ -39,10 +36,26 @@ def upload_image(request):
 
 @login_required
 def image_list(request):
-    images = UploadedImage.objects.filter(user=request.user)
+    form = DateRangeFilterForm(request.GET)
+    images = UploadedImage.objects.all()
 
+    # 사용자가 날짜 범위를 선택한 경우
+    if form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+
+        # 이미지를 선택한 날짜 범위로 필터링합니다.
+        if start_date:
+            images = images.filter(uploaded_at__gte=start_date)
+        if end_date:
+            # end_date를 다음날의 0시 0분 0초로 설정하여 1초 전까지 조회합니다.
+            end_date += timedelta(days=1)  # 다음날로 이동
+            end_date -= timedelta(seconds=1)  # 1초 전까지 조회
+            images = images.filter(uploaded_at__lte=end_date)
+    
     context = {
         'images': images,
+        'form': form,
     }
     return render(request, 'yolov5_django/image_list.html', context)
 
