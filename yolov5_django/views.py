@@ -15,15 +15,21 @@ def upload_image(request):
             image = form.save(commit=False)
             image.user = request.user  # 현재 로그인한 사용자 설정
             image.save()
-            return redirect('yolov5_django:image_list')  # 이미지 목록 페이지로 리디렉션
+            return redirect('yolov5_django:detail_image', image_id=image.id)
     else:
         form = UploadImageForm()
-    return render(request, 'yolov5_django/upload_image.html', {'form': form})
+    context = {
+        'form': form,
+    }
+    return render(request, 'yolov5_django/upload_image.html', context)
 
 @login_required
 def image_list(request):
     images = UploadedImage.objects.filter(user=request.user)
-    return render(request, 'yolov5_django/image_list.html', {'images': images})
+    context = {
+        'images': images,
+    }
+    return render(request, 'yolov5_django/image_list.html', context)
 
 
 @login_required
@@ -41,8 +47,11 @@ def edit_image(request, image_id):
             return redirect('yolov5_django:image_list')
     else:
         form = EditImageForm(instance=image)
-
-    return render(request, 'yolov5_django/edit_image.html', {'form': form, 'image': image})
+    context = {
+        'form': form, 
+        'image': image,
+    }
+    return render(request, 'yolov5_django/edit_image.html', context)
 
 
 @login_required
@@ -55,5 +64,17 @@ def delete_image(request, image_id):
 
         # 삭제가 완료되면 이미지 목록 페이지로 리디렉션
         return redirect('yolov5_django:image_list')
+    context = {
+        'image': image,
+    }
 
-    return render(request, 'yolov5_django/delete_image.html', {'image': image})
+    return render(request, 'yolov5_django/delete_image.html', context)
+
+
+@login_required
+def detail_image(request, image_id):
+    image = get_object_or_404(UploadedImage, pk=image_id)
+    context = {
+        'image': image,
+    }
+    return render(request, 'yolov5_django/detail_image.html', context)
