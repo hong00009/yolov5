@@ -6,9 +6,12 @@
     {% for image in images %}
     <div class="col">
         <div class="card">
-            <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.title }}">
+            <a href="{% url 'yolov5_django:detail_image' image.id %}">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.title }}">
+            </a>
             <div class="card-body">
-                <h5 class="card-title">{{image.title}}</h5>
+                <h5 class="card-title">{{ image.title }}</h5>
+
             </div>
             <a href="{% url 'yolov5_django:edit_image' image.id %}">Edit</a>
             <a href="{% url 'yolov5_django:delete_image' image.id %}">Delete</a>

@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('edit_image/<int:image_id>/', views.edit_image, name='edit_image'),
     path('delete_image/<int:image_id>/', views.delete_image, name='delete_image'),
-    
-    path('chart/', views.chart, name='chart'),
+    path('image/<int:image_id>/', views.detail_image, name='detail_image'),
 
+    path('chart/', views.chart, name='chart'),
 ]
