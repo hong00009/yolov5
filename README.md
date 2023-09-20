@@ -47,8 +47,9 @@ git clone "url"
 팀원들이 각각, 파일을 올리는 공간을 생성해주는 것이다.
 
 main 1곳에 다 올려버리면, 파일이 꼬일 수 있으므로 분리합니다.
-
+```sh
 git branch "branch이름"
+```
 (팀원의 이름으로 설정)
 
  
@@ -60,24 +61,31 @@ github repository에서 4개의 branch가 생성된 걸 확인 가능합니다.
  
 ### 4. 브랜치 전환
 
+```sh
 git switch "branch이름"
-
+```
 ex) git switch main
  
 
 ### 5. local에서 remote로 파일 업로드
 
+```sh
 git add .
+```
 
 커밋되기 전 상태 (staging으로 올린다)
 
 → 모든 파일을 staging 해준다.
 
+```sh
  git commit -sm "Update : test"
+```
 
 -아직 local 환경에만 있는 상태
 
+```sh
 git commit 다음의 메시지는 convention
+```
 
 (팀원들끼리 규칙을 정해서, commit message를 정한다.)
 
@@ -90,8 +98,9 @@ github 협업시, 아무나 repository에 파일을 올리면 안되므로,권�
 
 (fork 떠서, clone하는 방법은 상관없다고 합니다)
 
- 
+```sh
 git push origin "branch이름"
+```
 
 - git 원격에 파일을 올리는 작업
 
