@@ -12,17 +12,17 @@
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-      <script>
+      <script> 
         const ctx = document.getElementById('myChart')
         
         new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: [{% for n in nutris %} '{{n.food_name}}', {% endfor %}],
+            labels: [{% for n in all_nutris %} '{{n.food_name}}', {% endfor %}],
             datasets: [
               {
                 label: 'energy(kcal)',
-                data: [{% for n in nutris %} '{{n.energy}}', {% endfor %}],
+                data: [{% for n in all_nutris %} '{{n.energy}}', {% endfor %}],
                 borderWidth: 1
               }
             ]
@@ -35,6 +35,83 @@
             }
           }
         })
+      </script>
+
+      <div>
+        <canvas id="myChart2"></canvas>
+      </div>
+
+      <script>
+        const ctx2 = document.getElementById('myChart2')
+      
+        const oneFoodData = JSON.parse('{{ one_food_data_json|escapejs }}');
+
+        const labels = [ 'energy']; // 필드 이름을 추가하거나 수정
+        const data = labels.map(label => oneFoodData[label]);
+        
+
+        new Chart(ctx2, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'energy(kcal)',
+                data: data,
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false
+          }
+        });
+      </script>
+
+      <div>
+        <canvas id="myChart3"></canvas>
+      </div>
+
+      <script>
+
+        const ctx3 = document.getElementById('myChart3');
+        // 템플릿에서 전달된 데이터 가져오기
+        const nutri_labels = JSON.parse('{{ nutri_labels|safe }}');
+        const one_food_data_json = JSON.parse('{{ one_food_data_json|escapejs }}');
+      
+        // 라벨과 데이터 배열 초기화
+        const labels = [];
+        const data = [];
+      
+        // nutri_labels를 순회하며 라벨과 데이터 추가
+        for (const label of nutri_labels) {
+          labels.push(label);
+          // one_food_data_json에서 해당 영양 정보 가져와서 data 배열에 추가
+          data.push(one_food_data_json[label]);
+          console.log('Label:', label);
+        }
+        
+        console.log('Data:', one_food_data_json);
+
+        
+        new Chart(ctx3, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'energy(kcal)',
+                data: data,
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+          },
+        });
       </script>
     </div>
   </div>
