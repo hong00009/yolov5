@@ -5,7 +5,13 @@
   <img src="{{ image.image.url }}" alt="{{ image.title }}" style="max-width:640px; max-height:640px;">
   <p>작성일: {{ image.uploaded_at|date:"Y-m-d H:i:s" }}</p> 
   
-  <p>결과: {{ detection_result_int }}</p>
+  <p>결과: 
+    {% if detection_result_int %}
+      {{ detection_result_int }}
+    {% else %}
+      없음
+    {% endif %}
+  </p>
   <p>{{detection_result_str}}</p>
 
   <a href="{% url 'yolov5_django:image_list' %}">작성글 보기</a>
