@@ -29,6 +29,10 @@ def upload_image(request):
             image.user = request.user  # 현재 로그인한 사용자 설정
             image.uploaded_at = datetime.now() # 현재 날짜와 시간 저장
             image.save()
+            image.detection_result = yolo_detect.y_detect(image.image.path)
+            image.save()
+            
+
             return redirect('yolov5_django:detail_image', image_id=image.id)
     else:
         form = UploadImageForm()
@@ -105,38 +109,30 @@ def delete_image(request, image_id):
 @login_required
 def detail_image(request, image_id):
     image = get_object_or_404(UploadedImage, pk=image_id)
+    
+    detected_classes = []
+    if image.detection_result:
+        detected_classes = [int(x) for x in image.detection_result.split(',')]
+        
+    food_names = []
+    
+    for class_index in detected_classes:
+        try:
+            food_item = FoodNutrition.objects.get(class_index=class_index)
+            food_names.append(food_item.food_name)
+        except FoodNutrition.DoesNotExist:
+            food_names.append("알수없음")
+
+    print('이미지:',image.detection_result)
+
+    print('결과:',image.detection_result)
+
+    detection_result_str= ','.join(food_names)
+
     context = {
         'image': image,
+        'detection_result_int': image.detection_result,
+        'detection_result_str': detection_result_str,
     }
+
     return render(request, 'yolov5_django/detail_image.html', context)
-
-
-def chart(request):
-    # all_nutris = FoodNutrition.objects.all()
-
-    # 클래스_인덱스 2번 => 콩밥
-    one_food_data = FoodNutrition.objects.filter(class_index=2).first() 
-
-    field_names = [field.name for field in FoodNutrition._meta.fields] 
-
-    # 음식g, 열량 등..
-    nutri_labels = field_names[5:]  
-
-    one_food_data_dict = {}
-    for field in one_food_data._meta.fields:
-        field_name = field.name
-        field_value = getattr(one_food_data, field_name)
-        one_food_data_dict[field_name] = field_value
-    
-
-    # 필요한 데이터를 JSON 형식으로 변환
-    one_food_data_json = json.dumps(one_food_data_dict)
-    print(one_food_data_json)
-
-    context = {
-        # 'all_nutris' : all_nutris,
-        # 'one_food_data': one_food_data,
-        'nutri_labels' : nutri_labels,
-        'one_food_data_json':one_food_data_json,
-    }
-    return render(request, 'yolov5_django/chart.html', context)

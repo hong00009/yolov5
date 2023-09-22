@@ -1,5 +1,5 @@
 from django.urls import path, include
-from yolov5_django import views 
+from yolov5_django import views, yolo_detect, chart
 
 app_name = 'yolov5_django'
 
@@ -12,5 +12,5 @@ urlpatterns = [
     path('delete_image/<int:image_id>/', views.delete_image, name='delete_image'),
     path('image/<int:image_id>/', views.detail_image, name='detail_image'),
 
-    path('chart/', views.chart, name='chart'),
+    path('chart/', chart.chart, name='chart'),
 ]
