@@ -63,25 +63,29 @@ from django.shortcuts import get_object_or_404
 @login_required
 def profile(request):
     user = request.user
+
+    # 사용자에 대한 프로필이 있는지 확인
     try:
         profile = UserProfile.objects.get(user=user)
-        if not profile.profile_completed:
-            # 프로필 정보를 입력하지 않은 경우 프로필 입력 페이지로 리디렉션
-            return redirect('accounts:profile')
     except UserProfile.DoesNotExist:
-        # 프로필 정보가 아예 없는 경우도 프로필 입력 페이지로 리디렉션
-        return redirect('accounts:profile')
+        # 프로필이 없는 경우 새로운 프로필 생성
+        profile = UserProfile(user=user)
 
+    # 프로필 업데이트
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('yolov5_django:index')
+            
+            # profile.bmi = profile.calculate_bmi()
+            profile.save()
     else:
         form = UserProfileForm(instance=profile)
 
     context = {
         'form': form,
+        'profile': profile,
+        # 'bmi': profile.calculate_bmi(),
     }
 
     return render(request, 'accounts/profile.html', context)

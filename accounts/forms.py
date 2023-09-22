@@ -25,9 +25,18 @@ class UserProfileForm(forms.ModelForm):
         ('female', '여성'),
     )
     gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect)
+    gender.label = '성별'
     class Meta:
         model = UserProfile
         fields = ['gender', 'birthdate', 'height', 'weight']
+        
+        labels = {
+        'birthdate': '생년월일',
+        'weight': '체중 (kg)',
+        'height': '키 (cm)',
+        }
+        
         widgets = {
-            'birthdate': forms.DateInput(attrs={'type': 'date', 'value': '2000-01-01'}),
+            'birthdate': forms.DateInput(attrs={'type': 'date', 
+                                                'value': '2000-01-01'}),
         }
