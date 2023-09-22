@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>나의 신체 정보</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">저장</button>
+  </form>
+
+  {% if profile %}
+    <p>BMI: {{ bmi }}</p>
+  {% endif %}
+{% endblock %}
