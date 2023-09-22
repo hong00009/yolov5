@@ -66,6 +66,7 @@ def profile(request):
 
     # 사용자에 대한 프로필이 있는지 확인
     try:
+        # 프로필이 있으면 db에서 기존 정보 불러옴
         profile = UserProfile.objects.get(user=user)
     except UserProfile.DoesNotExist:
         # 프로필이 없는 경우 새로운 프로필 생성
@@ -76,16 +77,12 @@ def profile(request):
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            
-            # profile.bmi = profile.calculate_bmi()
-            profile.save()
     else:
         form = UserProfileForm(instance=profile)
 
     context = {
         'form': form,
         'profile': profile,
-        # 'bmi': profile.calculate_bmi(),
     }
 
     return render(request, 'accounts/profile.html', context)
