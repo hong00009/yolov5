@@ -14,7 +14,7 @@ from uuid import uuid4 # 고유번호 생성
 from .models import UploadedImage, FoodNutrition
 
 def y_detect(img_path):
-    model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolov5_model/yolov5l_best.pt')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolov5_model/yolov5L_best.pt')
     results = model(img_path, size=640)
 
     detections = results.xyxy[0]
