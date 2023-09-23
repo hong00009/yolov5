@@ -48,18 +48,6 @@ def logout(request):
     return redirect('yolov5_django:index')
 
 
-# BMI 계산
-def calculate_bmi(height, weight):
-    # 키를 미터로 변환
-    height_in_meters = height / 100.0
-    
-    # BMI 계산 (체중(kg) / (키(m) * 키(m)))
-    bmi = weight / (height_in_meters * height_in_meters)
-    
-    return bmi
-
-from django.shortcuts import get_object_or_404
-
 @login_required
 def profile(request):
     user = request.user

@@ -2,25 +2,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import FoodNutrition
 import json
 
-def chart(class_indexes):
+def chart(class_idx):
     # 각 class_index에 해당하는 음식의 영양 정보 가져오기
-    food_data_list = FoodNutrition.objects.filter(class_index__in=class_indexes)
+    food_list = FoodNutrition.objects.filter(class_index__in=class_idx)
 
-    total_nutrition = {
+    nutrition_3 = {
         'carbohydrate': 0,
         'protein': 0,
         'fat': 0,
     }
 
-    for food_data in food_data_list:
-        total_nutrition['carbohydrate'] += getattr(food_data, 'carbohydrate')
-        total_nutrition['protein'] += getattr(food_data, 'protein')
-        total_nutrition['fat'] += getattr(food_data, 'fat')
+    for each_food in food_list:
+        nutrition_3['carbohydrate'] += getattr(each_food, 'carbohydrate')
+        nutrition_3['protein'] += getattr(each_food, 'protein')
+        nutrition_3['fat'] += getattr(each_food, 'fat')
 
     # 필요한 데이터를 JSON 형식으로 변환
-    total_nutrition_json = json.dumps(total_nutrition)
+    chart_info_json = json.dumps(nutrition_3)
 
-    return total_nutrition_json
+    return chart_info_json
 
 
 # 한가지 음식 차트 테스트

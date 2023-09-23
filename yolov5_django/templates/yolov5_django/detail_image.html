@@ -10,20 +10,20 @@
       <p>작성일: {{ image.uploaded_at|date:'Y-m-d H:i:s' }}</p>
 
       <p>
-        결과:{% if detection_result_int %}
-          {{ detection_result_int }}
+        결과:{% if food_idx_list %}
+          {{ food_idx_list }}
         {% else %}
           없음
         {% endif %}
       </p>
 
-      <p>{{ detection_result_str }}</p>
+      <p>{{ food_name_list }}</p>
       <a href="{% url 'yolov5_django:image_list' %}">작성글 보기</a>
     </div>
 
     <!-- md 이상에서는 6칸(가로배치), sm에서는 12칸(세로배치) -->
     <div class="col-md-6 col-sm-12 mb-md-4 mb-sm-4">
-      {% if detection_result_int and detection_result_int != "" %}
+      {% if food_idx_list and food_idx_list != "" %}
         {% include "yolov5_django/_chart.html" %}
       {% else %}
         <p>.</p>
