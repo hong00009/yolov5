@@ -12,29 +12,39 @@
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-      <script> 
-        const ctx = document.getElementById('myChart')
-        
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: [{% for n in all_nutris %} '{{n.food_name}}', {% endfor %}],
-            datasets: [
-              {
-                label: 'energy(kcal)',
-                data: [{% for n in all_nutris %} '{{n.energy}}', {% endfor %}],
-                borderWidth: 1
-              }
-            ]
-          },
-          options: {
-            scales: {
-              y: {
+      <script>
+
+      const ctx = document.getElementById('myChart')
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [
+            {% for n in all_nutris %} 
+              '{{n.food_name}}', 
+            {% endfor %}
+          ],
+          datasets: [
+            {
+              label: 'energy(kcal)',
+
+              data: [
+                {% for n in all_nutris %} 
+                  '{{n.energy}}', 
+                {% endfor %}
+              ],
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: {
                 beginAtZero: true
               }
-            }
           }
-        })
+        }
+      })
       </script>
 
       <div>
@@ -43,76 +53,44 @@
 
       <script>
         const ctx2 = document.getElementById('myChart2')
-      
+        
         const oneFoodData = JSON.parse('{{ one_food_data_json|escapejs }}');
-
-        const labels = [ 'energy']; // 필드 이름을 추가하거나 수정
+        
+        const labels = ['carbohydrate', 'protein', 'fat'];
         const data = labels.map(label => oneFoodData[label]);
         
-
+        // Calculate the total amount of nutrition
+        const totalNutrition = data.reduce((a, b) => a + b, 0);
+        
         new Chart(ctx2, {
-          type: 'pie',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'energy(kcal)',
-                data: data,
-                borderWidth: 1
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false
-          }
+            type:'pie',
+            data:{
+                labels :labels,
+                datasets:[{
+                    label:'',
+                    data:data,
+                    borderWidth :1
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins: {
+                    tooltip:{
+                        callbacks:{
+                            label: function(context) {
+                                var datasetLabel=context.dataset.label || '';
+                                var currentValue=context.parsed;
+                                var percentage=Math.round((currentValue/totalNutrition)*100);
+                                
+                                return datasetLabel+': '+currentValue+'g ('+percentage+'%)';
+                            }
+                        }
+                    }  
+                }
+            }  
         });
-      </script>
-
-      <div>
-        <canvas id="myChart3"></canvas>
-      </div>
-
-      <script>
-
-        const ctx3 = document.getElementById('myChart3');
-        // 템플릿에서 전달된 데이터 가져오기
-        const nutri_labels = JSON.parse('{{ nutri_labels|safe }}');
-        const one_food_data_json = JSON.parse('{{ one_food_data_json|escapejs }}');
-      
-        // 라벨과 데이터 배열 초기화
-        const labels = [];
-        const data = [];
-      
-        // nutri_labels를 순회하며 라벨과 데이터 추가
-        for (const label of nutri_labels) {
-          labels.push(label);
-          // one_food_data_json에서 해당 영양 정보 가져와서 data 배열에 추가
-          data.push(one_food_data_json[label]);
-          console.log('Label:', label);
-        }
-        
-        console.log('Data:', one_food_data_json);
-
-        
-        new Chart(ctx3, {
-          type: 'pie',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'energy(kcal)',
-                data: data,
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-          },
-        });
-      </script>
+        </script>
     </div>
   </div>
 {% endblock %}

@@ -14,6 +14,7 @@ from django.core.files.storage import FileSystemStorage
 from datetime import datetime, timedelta
 
 import json
+from .chart import chart
 
 # Create your views here.
 
@@ -109,7 +110,7 @@ def delete_image(request, image_id):
 @login_required
 def detail_image(request, image_id):
     image = get_object_or_404(UploadedImage, pk=image_id)
-    
+
     detected_classes = []
     if image.detection_result:
         detected_classes = [int(x) for x in image.detection_result.split(',')]
@@ -133,6 +134,8 @@ def detail_image(request, image_id):
         'image': image,
         'detection_result_int': image.detection_result,
         'detection_result_str': detection_result_str,
+        'total_nutrition_json': chart(detected_classes),
     }
 
     return render(request, 'yolov5_django/detail_image.html', context)
+

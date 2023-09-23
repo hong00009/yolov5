@@ -1,0 +1,48 @@
+<!-- chart.html -->
+<div>
+    <canvas id="myChart"></canvas>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    const ctx2 = document.getElementById('myChart')
+    const totalNutrition = JSON.parse('{{ total_nutrition_json|escapejs }}')
+    const classIndex = '{{ class_index }}'
+    const labels = ['탄수화물', '단백질', '지방']
+    const dataKeys = ['carbohydrate', 'protein', 'fat']
+    const data = dataKeys.map((key) => totalNutrition[key])
+    
+    const sumOfTotalNutritions= data.reduce((a,b) => a+b , 0)
+    
+     new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins:{
+          tooltip:{
+            callbacks:{
+              label:function(context){
+                var datasetLabel = context.dataset.label || ''
+                var currentValue = parseFloat(context.parsed).toFixed(2) 
+                var percentage = Math.round((currentValue / sumOfTotalNutritions) *100)
+          
+                return datasetLabel + ': '+ currentValue + 'g ('+percentage+'%)'
+              }
+            }
+          } 
+       } 
+     }
+   })
+  </script>
+  
