@@ -4,6 +4,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+from .forms import UserProfileForm
 
 # Create your views here.
 
@@ -46,5 +48,29 @@ def logout(request):
     return redirect('yolov5_django:index')
 
 
-# def mypage(request):
-# return render(request, 'accounts/mypage.html', context)
+@login_required
+def profile(request):
+    user = request.user
+
+    # 사용자에 대한 프로필이 있는지 확인
+    try:
+        # 프로필이 있으면 db에서 기존 정보 불러옴
+        profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        # 프로필이 없는 경우 새로운 프로필 생성
+        profile = UserProfile(user=user)
+
+    # 프로필 업데이트
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserProfileForm(instance=profile)
+
+    context = {
+        'form': form,
+        'profile': profile,
+    }
+
+    return render(request, 'accounts/profile.html', context)
