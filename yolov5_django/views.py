@@ -41,7 +41,7 @@ def upload_image(request):
     return render(request, 'yolov5_django/upload_image.html', context)
 
 @login_required
-def image_list(request):
+def my_page(request):
     form = DateRangeFilterForm(request.GET)
     images = UploadedImage.objects.filter(user=request.user)
 
@@ -63,7 +63,7 @@ def image_list(request):
         'images': images,
         'form': form,
     }
-    return render(request, 'yolov5_django/image_list.html', context)
+    return render(request, 'yolov5_django/my_page.html', context)
 
 
 @login_required
@@ -78,7 +78,7 @@ def edit_image(request, image_id):
             form.save()
 
             # 수정이 완료되면 이미지 목록 페이지로 리디렉션
-            return redirect('yolov5_django:image_list')
+            return redirect('yolov5_django:my_page')
     else:
         form = EditImageForm(instance=image)
     context = {
@@ -97,7 +97,7 @@ def delete_image(request, image_id):
         image.delete()
 
         # 삭제가 완료되면 이미지 목록 페이지로 리디렉션
-        return redirect('yolov5_django:image_list')
+        return redirect('yolov5_django:my_page')
     context = {
         'image': image,
     }

@@ -7,7 +7,7 @@
 
       <h1>{{ image.title }}</h1>
       <img src="{{ image.image.url }}" alt="{{ image.title }}" style="max-width:100%; max-height:640px;" />
-      <p>작성일: {{ image.uploaded_at|date:'Y-m-d H:i:s' }}</p>
+      <p>작성일: {{ image.uploaded_at|date:'Y-m-d' }}</p>
 
       <p>
         결과:{% if food_idx_list %}
@@ -18,7 +18,7 @@
       </p>
 
       <p>{{ food_name_list }}</p>
-      <a href="{% url 'yolov5_django:image_list' %}">작성글 보기</a>
+      <a href="{% url 'yolov5_django:my_page' %}">작성글 보기</a>
     </div>
 
     <!-- md 이상에서는 6칸(가로배치), sm에서는 12칸(세로배치) -->

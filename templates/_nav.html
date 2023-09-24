@@ -14,7 +14,7 @@
         <a class="nav-link" href="{% url 'accounts:profile' %}">{{user}}님</a>
         <a class="nav-link" href="{% url 'accounts:logout' %}">로그아웃</a>
         <a class="nav-link" href="{% url 'yolov5_django:upload_image' %}">(임시)업로드</a>
-        <a class="nav-link" href="{% url 'yolov5_django:image_list' %}">(임시)작성글보기</a>
+        <a class="nav-link" href="{% url 'yolov5_django:my_page' %}">(임시)작성글보기</a>
 
         {% else %}
         <a class="nav-link" href="{% url 'accounts:login' %}">로그인</a>
