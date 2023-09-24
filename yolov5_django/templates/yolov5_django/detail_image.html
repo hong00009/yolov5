@@ -1,12 +1,35 @@
-
 {% extends 'base.html' %}
 {% block content %}
-  <h1>{{ image.title }}</h1>
-  <p>업로드한 이미지</p>
-  <img src="{{ image.image.url }}" alt="{{ image.title }}">
-  <p>Uploaded on: {{ image.uploaded_at|date:"Y-m-d H:i:s" }}</p> 
-  
-  <!-- 기타 게시글 정보 표시 -->
-  <a href="{% url 'yolov5_django:image_list' %}">작성글 보기</a>
+{% comment %} row : 수평으로 나열됨 {% endcomment %}
+  <div class="row"> 
 
+    <div class="col-md-6 col-sm-12 mb-md-4 mb-sm-4">
+
+      <h1>{{ image.title }}</h1>
+      <img src="{{ image.image.url }}" alt="{{ image.title }}" style="max-width:100%; max-height:640px;" />
+      <p>작성일: {{ image.uploaded_at|date:'Y-m-d' }}</p>
+
+      <p>
+        결과:{% if food_idx_list %}
+          {{ food_idx_list }}
+        {% else %}
+          없음
+        {% endif %}
+      </p>
+
+      <p>{{ food_name_list }}</p>
+      <a href="{% url 'yolov5_django:my_page' %}">작성글 보기</a>
+    </div>
+
+    <!-- md 이상에서는 6칸(가로배치), sm에서는 12칸(세로배치) -->
+    <div class="col-md-6 col-sm-12 mb-md-4 mb-sm-4">
+      {% if food_idx_list and food_idx_list != "" %}
+        {% include "yolov5_django/_chart.html" %}
+      {% else %}
+        <p>.</p>
+      {% endif %}
+    </div>
+
+    
+  </div>
 {% endblock %}

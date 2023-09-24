@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+<div class="row-cols-1">
+    
+    <form method="GET">
+        {{ form.as_p }}
+    <button type="submit">기간검색</button>
+    <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-secondary">Reset</a>
+    </form>
+    <a href="{% url 'yolov5_django:upload_image' %}" class="btn btn-primary">새 게시물 작성</a>
+    <a href="{% url 'accounts:profile' %}" class="btn btn-info">프로필 페이지</a>    
+</div>
+<br>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+    {% for image in images %}
+    <div class="col">
+        <div class="card">
+            <a href="{% url 'yolov5_django:detail_image' image.id %}">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.title }}">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">{{ image.title }}</h5>
+                <p>Uploaded on: {{ image.uploaded_at|date:"Y-m-d" }}</p> 
+            </div>
+            <a href="{% url 'yolov5_django:edit_image' image.id %}">Edit</a>
+            <a href="{% url 'yolov5_django:delete_image' image.id %}">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}            
+
+{% endblock %}
