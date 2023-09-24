@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from .yolo_detect import y_detect
 from accounts.personal_nutrition import save_personal_food_nutrition
-from .chart import chart
+from .foodinfo import food_info
 
 # Create your views here.
 
@@ -109,24 +109,14 @@ def delete_image(request, image_id):
 def detail_image(request, image_id):
     image = get_object_or_404(UploadedImage, pk=image_id)
 
-    food_list = []
-    food_names = []
-    if image.detection_result:
-        food_list = [int(x) for x in image.detection_result.split(',')]
-        
-        for class_idx in food_list:
-            each_food = FoodNutrition.objects.get(class_index=class_idx)
-            food_names.append(each_food.food_name)
-    else:
-        food_names.append('')
-
-    food_name_list = ','.join(food_names)
+    food_idx_list, food_name_list, chart_info_json = food_info(image_id)
 
     context = {
         'image': image,
+
         'food_idx_list': image.detection_result,
         'food_name_list': food_name_list,
-        'chart_info_json': chart(food_list),
+        'chart_info_json': chart_info_json,
     }
-
+    
     return render(request, 'yolov5_django/detail_image.html', context)

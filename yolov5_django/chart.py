@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import FoodNutrition
+from accounts.models import UserFoodNutritions
 import json
 
-def chart(class_idx):
-    # 각 class_index에 해당하는 음식의 영양 정보 가져오기
-    food_list = FoodNutrition.objects.filter(class_index__in=class_idx)
+def chart(user=None, post=None, selected_foods=None):
+
+    # 마이페이지용, 선택된 게시물이 없으면 사용자의 전체 게시물의 영양소 불러오기
+    if post is None:
+        user_nutrition_list = UserFoodNutritions.objects.filter(user=user)
+
+    # 게시물 단독 처리용. 하나의 게시물에 대한 영양정보 불러오기
+    else:
+        user_nutrition_list = UserFoodNutritions.objects.filter(user=user, post=post)
 
     nutrition_3 = {
         'carbohydrate': 0,
@@ -12,33 +17,22 @@ def chart(class_idx):
         'fat': 0,
     }
 
-    for each_food in food_list:
-        nutrition_3['carbohydrate'] += getattr(each_food, 'carbohydrate')
-        nutrition_3['protein'] += getattr(each_food, 'protein')
-        nutrition_3['fat'] += getattr(each_food, 'fat')
+    food_list = []
 
-    # 필요한 데이터를 JSON 형식으로 변환
+    for each_record in user_nutrition_list:
+        food_nutrition = each_record.nutrition_info
+        food_list.append(food_nutrition)
+
+        # 선택 없으면 건너뛰기, 선택한 음식만 합산
+        if selected_foods is not None and food_nutrition not in selected_foods:
+            continue
+
+        nutrition_3['carbohydrate'] += getattr(food_nutrition, 'carbohydrate')
+        nutrition_3['protein'] += getattr(food_nutrition, 'protein')
+        nutrition_3['fat'] += getattr(food_nutrition, 'fat')
+
+    print('food_list:',food_list)
+    # json형식으로 전달해 차트 그림
     chart_info_json = json.dumps(nutrition_3)
 
-    return chart_info_json
-
-
-# 한가지 음식 차트 테스트
-# def chart(class_idx):
-#     all_nutris = FoodNutrition.objects.all()
-
-#     # 클래스_인덱스 2번 => 콩밥
-#     one_food_data = FoodNutrition.objects.filter(class_index=class_idx).first() 
-
-#     field_names = [field.name for field in FoodNutrition._meta.fields] 
-#     print('field_names', field_names,'\n')
-
-#     one_food_data_dict = {}
-#     for field in one_food_data._meta.fields:
-#         field_name = field.name
-#         field_value = getattr(one_food_data, field_name)
-#         one_food_data_dict[field_name] = field_value
-    
-#     one_food_data_json = json.dumps(one_food_data_dict)
-
-#     return one_food_data_json
+    return chart_info_json, food_list

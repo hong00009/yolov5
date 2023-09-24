@@ -1,48 +1,68 @@
-<!-- chart.html -->
 <div>
-    <canvas id="myChart"></canvas>
-  </div>
+  <form id="food-selection-form">
+    {% for food in food_list %}
+    <input type="checkbox" name="food" value="{{ food.class_index }}" checked> {{ food.food_name }}<br>
+    {% endfor %}
+  </form>
+
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx2 = document.getElementById('myChart')
+  const totalNutrition = JSON.parse('{{ chart_info_json|escapejs }}')
+  const classIndex = '{{ class_index }}'
+  const labels = ['탄수화물', '단백질', '지방']
+  const dataKeys = ['carbohydrate', 'protein', 'fat']
+  const data = dataKeys.map((key) => totalNutrition[key])
   
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  const sumOfTotalNutritions = data.reduce((a, b) => a + b, 0)
   
-  <script>
-    const ctx2 = document.getElementById('myChart')
-    const totalNutrition = JSON.parse('{{ chart_info_json|escapejs }}')
-    const classIndex = '{{ class_index }}'
-    const labels = ['탄수화물', '단백질', '지방']
-    const dataKeys = ['carbohydrate', 'protein', 'fat']
-    const data = dataKeys.map((key) => totalNutrition[key])
-    
-    const sumOfTotalNutritions= data.reduce((a,b) => a+b , 0)
-    
-     new Chart(ctx2, {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            data: data,
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins:{
-          tooltip:{
-            callbacks:{
-              label:function(context){
-                var datasetLabel = context.dataset.label || ''
-                var currentValue = parseFloat(context.parsed).toFixed(2) 
-                var percentage = Math.round((currentValue / sumOfTotalNutritions) *100)
-          
-                return datasetLabel + ': '+ currentValue + 'g ('+percentage+'%)'
-              }
+  new Chart(ctx2, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          data: data,
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              var datasetLabel = context.dataset.label || ''
+              var currentValue = parseFloat(context.parsed).toFixed(2)
+              var percentage = Math.round((currentValue / sumOfTotalNutritions) * 100)
+  
+              return datasetLabel + ': ' + currentValue + 'g (' + percentage + '%)'
             }
-          } 
-       } 
-     }
-   })
-  </script>
-  
+          }
+        }
+      }
+    }
+  })
+
+// 버튼 기능
+document.getElementById('update-chart').addEventListener('click', function() {
+
+  const selectedFoods = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(input => input.value)
+
+  fetch('/chart-data-url?selected_foods=' + selectedFoods.join(','))
+    .then(response => response.json())
+    .then(newTotalNutrition => {
+      // 새 데이터로 차트를 업데이트합니다.
+      totalNutrition = newTotalNutrition
+      data = dataKeys.map((key) => totalNutrition[key])
+      myChart.data.datasets[0].data = data
+      myChart.update()
+    })
+})
+</script>
