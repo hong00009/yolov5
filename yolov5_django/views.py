@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from .yolo_detect import y_detect
 from accounts.personal_nutrition import save_personal_food_nutrition
 from .chart import chart
-
+import os
+from django.conf import settings
 # Create your views here.
 
 def index(request):
@@ -93,6 +94,12 @@ def delete_image(request, image_id):
     image = get_object_or_404(UploadedImage, pk=image_id, user=request.user)
 
     if request.method == 'POST':
+
+        file_path = os.path.join(settings.MEDIA_ROOT, str(image.image))
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
         # 이미지 삭제 로직을 추가
         image.delete()
 

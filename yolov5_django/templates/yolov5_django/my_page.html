@@ -7,7 +7,7 @@
     <form method="GET">
         {{ form.as_p }}
     <button type="submit">기간검색</button>
-    <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-secondary">Reset</a>
+    <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-secondary">필터링 해제</a>
     </form>
     <a href="{% url 'yolov5_django:upload_image' %}" class="btn btn-primary">새 게시물 작성</a>
     <a href="{% url 'accounts:profile' %}" class="btn btn-info">프로필 페이지</a>    
@@ -23,10 +23,10 @@
             </a>
             <div class="card-body">
                 <h5 class="card-title">{{ image.title }}</h5>
-                <p>Uploaded on: {{ image.uploaded_at|date:"Y-m-d" }}</p> 
+                <p>작성일자: {{ image.uploaded_at|date:"Y-m-d" }}</p> 
             </div>
-            <a href="{% url 'yolov5_django:edit_image' image.id %}">Edit</a>
-            <a href="{% url 'yolov5_django:delete_image' image.id %}">Delete</a>
+            <a href="{% url 'yolov5_django:edit_image' image.id %}">수정</a>
+            <a href="{% url 'yolov5_django:delete_image' image.id %}">삭제</a>
         </div>
     </div>
     {% endfor %}

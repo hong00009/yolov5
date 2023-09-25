@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Edit Image</h1>
+  <h1>게시글 수정</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save Changes</button>
+    <button type="submit">저장</button>
   </form>
-  <a href="{% url 'yolov5_django:my_page' %}">Cancel</a>
+  <a href="{% url 'yolov5_django:my_page' %}">취소</a>
 {% endblock %}
