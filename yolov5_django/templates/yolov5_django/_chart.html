@@ -1,12 +1,39 @@
-<div>
+<style>
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+  table {
+      border: 1px solid #444444;
+      width: 50%;
+  }
+  th, td {
+      border: 1px solid #444444;
+      width: 30%;
+  }
+  td:nth-child(2) {
+      text-align: right;
+      width: 15%;
+   }
+</style>
+
+<div style="display: flex; align-items: center; justify-content: center; margin-top:20px; margin-bottom: 20px;">
   <select id="foodSelect">
-    {% if nutrition_info_list|length > 1 %}
     <option value="">전체</option>
+    {% if nutrition_info_list|length > 1 %}
+      {% for food in nutrition_info_list %}
+        <option value="{{ food.food_name }}">{{ food.food_name }}</option>
+      {% endfor %}
     {% endif %}
-    {% for food in nutrition_info_list %}
-      <option value="{{ food.food_name }}">{{ food.food_name }}</option>
-    {% endfor %}
   </select>
+  <form style="margin-left: 20px;">
+    <input type="radio" id="pie" name="graphType" value="pie" checked>
+    <label for="pie" style="margin-right: 20px;">원형</label>
+    <input type="radio" id="bar" name="graphType" value="bar">
+    <label for="bar" style="margin-right: 20px;">막대</label>
+  </form>
 </div>
 
 <div>
@@ -15,34 +42,40 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script> // 맨마지막줄에 닫았는데 왜 자꾸 빨간줄이 뜨는지 모르겠음
+<script>
   const ctx2 = document.getElementById('myChart')
   const totalNutrition = JSON.parse('{{ total_chart_info_json|escapejs }}')
   const eachNutrition = JSON.parse('{{ each_chart_info_json|escapejs }}') //#
   const classIndex = '{{ class_index }}'
   const labels = ['탄수화물', '단백질', '지방']
-
-  //# 
-  let myChart;
-
+  
+  //#
+  let myChart
+  
   function updateChart(foodName) {
-    let nutrition;
-    if (foodName) { // 특정 음식 선택시 해당음식만
-      nutrition = eachNutrition[foodName];
-    } else { // 음식선택 X > 전체
-      nutrition = totalNutrition;
+    let nutrition
+    if (foodName) {
+      // 특정 음식 선택시 해당음식만
+      nutrition = eachNutrition[foodName]
+    } else {
+      // 음식선택 X > 전체
+      nutrition = totalNutrition
     }
     //#
-
+  
     const dataKeys = ['carbohydrate', 'protein', 'fat']
     const data = dataKeys.map((key) => nutrition[key])
-    
-    const sumOfTotalNutritions= data.reduce((a,b) => a+b , 0)
-    
-    if (myChart) { // 리스트박스에서 새값 선택시 다시그리기위해 기존차트 지우기
-      myChart.destroy();
-    }
+  
+    const sumOfTotalNutritions = data.reduce((a, b) => a + b, 0)
+  
+    var graphType = document.querySelector('input[name = "graphType"]:checked').value;
 
+    if (myChart) {
+      // 리스트박스에서 새값 선택시 다시그리기위해 기존차트 지우기
+      myChart.destroy()
+    }
+  
+    if(graphType === 'pie'){
     myChart = new Chart(ctx2, {
       type: 'pie',
       data: {
@@ -50,32 +83,170 @@
         datasets: [
           {
             data: data,
-            borderWidth: 1
+            borderWidth: 1,
+            backgroundColor: [
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(255, 205, 86, 0.7)'
+  
+            ],
+            borderColor: [
+              'rgb(54, 162, 235)',
+              'rgb(255, 99, 132)',
+              'rgb(255, 205, 86)',
+            ],
+            hoverOffset: 10
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins:{
-          tooltip:{
-            callbacks:{
-              label:function(context){
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
                 var datasetLabel = context.dataset.label || ''
-                var currentValue = parseFloat(context.parsed).toFixed(2) 
-                var percentage = Math.round((currentValue / sumOfTotalNutritions) *100)
-          
-                return datasetLabel + ': '+ currentValue + 'g ('+percentage+'%)'
+                var currentValue = parseFloat(context.parsed).toFixed(2)
+                var percentage = Math.round((currentValue / sumOfTotalNutritions) * 100)
+  
+                return datasetLabel + ': ' + currentValue + 'g (' + percentage + '%)'
               }
             }
           }
         }
       }
-    })
+    });
+
+// if(graphType === 'pie'), new chart 첫번째 끝
+
+  } else if (graphType ==='bar'){ 
+    myChart = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels:labels,
+        datasets:[{
+          label:'3대 영양소',
+          data: data,
+          borderWidth: 1,
+          backgroundColor: [
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(255, 205, 86, 0.7)'
+          ],
+          borderColor: [
+            'rgb(54, 162, 235)',
+            'rgb(255, 99, 132)',
+            'rgb(255, 205, 86)',
+          ],
+        }]
+      },
+      options: {
+          scales: {
+              x: {
+                  stacked: true
+              },
+              y: {
+                  stacked: true
+              }
+          }
+      }
+  });
   }
-  updateChart(); // 페이지 로드 시에는 전체음식 영양소 차트 그리기
-  // 다른 음식 선택 시 차트 업데이트
+}
+
+  document.querySelector('form').addEventListener('change', function() {
+    var graphType = document.querySelector('input[name="graphType"]:checked').value;
+
+    if (myChart) {
+       myChart.destroy();
+    }
+
+    updateChart(graphType);
+  });
+
+  document.getElementById('foodSelect').addEventListener('change', function () {
+    updateChart(this.value)
+  });
+  updateChart()
+  
+</script>
+
+
+<div class="center">
+  <ol id="foodList">
+    {% for food in nutrition_info_list %}
+      <li>
+        {{ food.food_name }}
+        <ul>
+          <li>중량(1인분 표준): {{ food.weight }}g</li>
+          <li>열량: {{ food.energy }}kcal</li>
+          <li>탄수화물: {{ food.carbohydrate }}g</li>
+          <li>단백질: {{ food.protein }}g</li>
+          <li>지방: {{ food.fat }}g</li>
+          <li>나트륨: {{ food.sodium }}mg</li>
+          <br />
+        </ul>
+      </li>
+    {% endfor %}
+  </ol>
+
+  {% for food in nutrition_info_list %}
+    <table id="{{ food.food_name }}" class="food-table" style="display: none;">
+      <thead>
+        <tr>
+          <th colspan="2">{{ food.food_name }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>중량(1인분 표준)</td>
+          <td>{{ food.weight }}g</td>
+        </tr>
+        <tr>
+          <td>열량</td>
+          <td>{{ food.energy }}g</td>
+        </tr>
+        <tr>
+          <td>탄수화물</td>
+          <td>{{ food.carbohydrate }}g</td>
+        </tr>
+        <tr>
+          <td>단백질</td>
+          <td>{{ food.protein }}g</td>
+        </tr>
+        <tr>
+          <td>지방</td>
+          <td>{{ food.fat }}g</td>
+        </tr>
+        <tr>
+          <td>나트륨</td>
+          <td>{{ food.sodium }}mg</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+  {% endfor %}
+</div>
+
+<script>
   document.getElementById('foodSelect').addEventListener('change', function() {
-    updateChart(this.value);
+    var selectedFood = this.value;
+    
+    // 리스트, 표 숨김
+    document.getElementById('foodList').style.display = 'none';
+    
+    document.querySelectorAll('.food-table').forEach(function(table) {
+      table.style.display = 'none';
+    });
+  
+    if (selectedFood) {
+      // 선택된 음식의 표만 출력
+      document.getElementById(selectedFood).style.display = 'table';
+      
+     } else {
+       // 전체 선택시 전체 음식 리스트 출력
+       document.getElementById('foodList').style.display = 'block';
+     }
   });
 </script>
