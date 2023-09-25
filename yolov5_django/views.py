@@ -108,14 +108,15 @@ def detail_post(request, post_id):
 
     print('**', post.user,'의 detection_result:', post.detection_result)
     
-    food_name_list, chart_info_json, nutrition_info_list = food_info(post)
+    food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json = food_info(post)
 
     context = {
         'post': post,
 
         'food_idx_list': post.detection_result,
         'food_name_list': food_name_list,
-        'chart_info_json': chart_info_json,
+        'total_chart_info_json': total_chart_info_json,
+        'each_chart_info_json':each_chart_info_json,
         'nutrition_info_list':nutrition_info_list,
     }
     
