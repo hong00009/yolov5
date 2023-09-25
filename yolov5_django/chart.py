@@ -31,7 +31,7 @@ def chart(user=None, post=None, selected_foods=None):
         nutrition_3['protein'] += getattr(food_nutrition, 'protein')
         nutrition_3['fat'] += getattr(food_nutrition, 'fat')
 
-    print('food_list:',food_list)
+    print('*****food_list:',food_list)
     # json형식으로 전달해 차트 그림
     chart_info_json = json.dumps(nutrition_3)
 

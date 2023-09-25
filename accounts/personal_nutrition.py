@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import UserFoodNutritions
-from yolov5_django.models import UploadedImage, FoodNutrition
+from yolov5_django.models import Post, FoodNutrition
 
 def save_personal_food_nutrition(user, detected_foods):
-    post = UploadedImage.objects.filter(user=user).order_by('-uploaded_at').first()
+    post = Post.objects.filter(user=user).order_by('-uploaded_at').first()
 
     if detected_foods is not None:
         food_list = [int(index) for index in detected_foods.split(",")]

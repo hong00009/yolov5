@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
 from django.core.validators import MinValueValidator
-from yolov5_django.models import UploadedImage, FoodNutrition
+from yolov5_django.models import Post, FoodNutrition
 
 # Create your models here.
 class User(AbstractUser):
@@ -22,7 +21,7 @@ class UserProfile(models.Model):
 
 class UserFoodNutritions(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(UploadedImage, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     nutrition_info = models.ForeignKey(FoodNutrition, on_delete=models.SET_NULL, null=True)
 

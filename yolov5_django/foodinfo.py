@@ -3,7 +3,7 @@
 # food_idx_list, food_name_list, chart_info_json 
 
 from accounts.models import UserFoodNutritions
-from .models import UploadedImage, FoodNutrition
+from .models import Post, FoodNutrition
 from .chart import chart
 
 def food_info(post):

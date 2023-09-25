@@ -1,15 +1,15 @@
 from django import forms
-from .models import UploadedImage
+from .models import Post
 
-class UploadImageForm(forms.ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
-        model = UploadedImage
+        model = Post
         fields = ['title', 'image']
 
 
-class EditImageForm(forms.ModelForm):
+class EditPostForm(forms.ModelForm):
     class Meta:
-        model = UploadedImage
+        model = Post
         fields = ['title', 'image']
 
     title = forms.CharField(required=True)  # 선택적으로 제목 수정 가능하도록
