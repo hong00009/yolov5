@@ -29,4 +29,4 @@ class UserFoodNutritions(models.Model):
     datetime = models.DateTimeField() # 식사시간
 
     def __str__(self):
-        return f"{self.user.username}님의 섭취영양정보"
+        return f"{self.user.username} - {self.datetime} - {self.post} 섭취영양정보"
