@@ -1,20 +1,18 @@
 from django import forms
-from .models import UploadedImage
+from .models import Post
 
-class UploadImageForm(forms.ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
-        model = UploadedImage
+        model = Post
         fields = ['title', 'image']
 
-
-class EditImageForm(forms.ModelForm):
+class EditPostForm(forms.ModelForm):
     class Meta:
-        model = UploadedImage
+        model = Post
         fields = ['title', 'image']
 
     title = forms.CharField(required=True)  # 선택적으로 제목 수정 가능하도록
     image = forms.ImageField(required=True)  # 선택적으로 이미지 수정 가능하도록
-
 
 class DateRangeFilterForm(forms.Form):
     start_date = forms.DateField(label='Start Date', required=False, widget=forms.TextInput(attrs={'type': 'date'}))

@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, CustomUserChangeForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 from .forms import UserProfileForm

@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
 from django.core.validators import MinValueValidator
-from yolov5_django.models import UploadedImage
+from yolov5_django.models import Post, FoodNutrition
 
 # Create your models here.
 class User(AbstractUser):
@@ -22,14 +21,12 @@ class UserProfile(models.Model):
 
 class UserFoodNutritions(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(UploadedImage, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
-    energy = models.FloatField() # 열량
-    carbohydrate = models.FloatField() # 탄수화물
-    protein = models.FloatField() # 단백질
-    fat = models.FloatField() # 지방
-    sodium = models.FloatField() # 나트륨
+    nutrition_info = models.ForeignKey(FoodNutrition, on_delete=models.SET_NULL, null=True)
+    # FoodNutrition으로 연결, 음식객체 검출 안될 시 null저장
+
     datetime = models.DateTimeField() # 식사시간
 
     def __str__(self):
-        return f"{self.user.username}님의 섭취영양정보"
+        return f"{self.user.username} - {self.datetime} - {self.post} 섭취영양정보"
