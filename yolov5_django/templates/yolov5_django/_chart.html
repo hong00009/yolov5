@@ -1,21 +1,49 @@
-<!-- chart.html -->
 <div>
-    <canvas id="myChart"></canvas>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <script>
-    const ctx2 = document.getElementById('myChart')
-    const totalNutrition = JSON.parse('{{ chart_info_json|escapejs }}')
-    const classIndex = '{{ class_index }}'
-    const labels = ['탄수화물', '단백질', '지방']
+  <select id="foodSelect">
+    {% if nutrition_info_list|length > 1 %}
+    <option value="">전체</option>
+    {% endif %}
+    {% for food in nutrition_info_list %}
+      <option value="{{ food.food_name }}">{{ food.food_name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script> // 맨마지막줄에 닫았는데 왜 자꾸 빨간줄이 뜨는지 모르겠음
+  const ctx2 = document.getElementById('myChart')
+  const totalNutrition = JSON.parse('{{ total_chart_info_json|escapejs }}')
+  const eachNutrition = JSON.parse('{{ each_chart_info_json|escapejs }}') //#
+  const classIndex = '{{ class_index }}'
+  const labels = ['탄수화물', '단백질', '지방']
+
+  //# 
+  let myChart;
+
+  function updateChart(foodName) {
+    let nutrition;
+    if (foodName) { // 특정 음식 선택시 해당음식만
+      nutrition = eachNutrition[foodName];
+    } else { // 음식선택 X > 전체
+      nutrition = totalNutrition;
+    }
+    //#
+
     const dataKeys = ['carbohydrate', 'protein', 'fat']
-    const data = dataKeys.map((key) => totalNutrition[key])
+    const data = dataKeys.map((key) => nutrition[key])
     
     const sumOfTotalNutritions= data.reduce((a,b) => a+b , 0)
     
-     new Chart(ctx2, {
+    if (myChart) { // 리스트박스에서 새값 선택시 다시그리기위해 기존차트 지우기
+      myChart.destroy();
+    }
+
+    myChart = new Chart(ctx2, {
       type: 'pie',
       data: {
         labels: labels,
@@ -40,9 +68,14 @@
                 return datasetLabel + ': '+ currentValue + 'g ('+percentage+'%)'
               }
             }
-          } 
-       } 
-     }
-   })
-  </script>
-  
+          }
+        }
+      }
+    })
+  }
+  updateChart(); // 페이지 로드 시에는 전체음식 영양소 차트 그리기
+  // 다른 음식 선택 시 차트 업데이트
+  document.getElementById('foodSelect').addEventListener('change', function() {
+    updateChart(this.value);
+  });
+</script>
