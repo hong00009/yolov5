@@ -24,6 +24,7 @@ class UserFoodNutritions(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     nutrition_info = models.ForeignKey(FoodNutrition, on_delete=models.SET_NULL, null=True)
+    # FoodNutrition으로 연결, 음식객체 검출 안될 시 null저장
 
     datetime = models.DateTimeField() # 식사시간
 

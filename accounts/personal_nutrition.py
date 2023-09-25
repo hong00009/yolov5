@@ -1,3 +1,5 @@
+# 게시물에서 검출된 음식객체 수만큼 UserFoodNutritions 영양정보를 DB에 저장하는 함수
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import UserFoodNutritions
 from yolov5_django.models import Post, FoodNutrition

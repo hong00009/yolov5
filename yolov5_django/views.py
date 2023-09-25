@@ -106,9 +106,9 @@ def delete_post(request, post_id):
 def detail_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
-    post.detection_result
-    post.user
-    food_idx_list, food_name_list, chart_info_json = food_info(post_id)
+    print('**', post.user,'의 detection_result:', post.detection_result)
+    
+    food_name_list, chart_info_json, nutrition_info_list = food_info(post)
 
     context = {
         'post': post,
@@ -116,6 +116,7 @@ def detail_post(request, post_id):
         'food_idx_list': post.detection_result,
         'food_name_list': food_name_list,
         'chart_info_json': chart_info_json,
+        'nutrition_info_list':nutrition_info_list,
     }
     
     return render(request, 'yolov5_django/post.html', context)

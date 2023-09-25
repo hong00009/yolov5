@@ -1,10 +1,14 @@
+<!-- chart.html -->
 <div>
-  <form id="food-selection-form">
-    {% for food in food_list %}
-    <input type="checkbox" name="food" value="{{ food.class_index }}" checked> {{ food.food_name }}<br>
+  <select id="foodSelect">
+    <option value="">전체</option>
+    {% for food in nutrition_info_list %}
+      <option value="{{ food.food_name }}">{{ food.food_name }}</option>
     {% endfor %}
-  </form>
+  </select>
+</div>
 
+<div>
   <canvas id="myChart"></canvas>
 </div>
 
@@ -18,9 +22,9 @@
   const dataKeys = ['carbohydrate', 'protein', 'fat']
   const data = dataKeys.map((key) => totalNutrition[key])
   
-  const sumOfTotalNutritions = data.reduce((a, b) => a + b, 0)
+  const sumOfTotalNutritions= data.reduce((a,b) => a+b , 0)
   
-  new Chart(ctx2, {
+   new Chart(ctx2, {
     type: 'pie',
     data: {
       labels: labels,
@@ -34,35 +38,120 @@
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function (context) {
+      plugins:{
+        tooltip:{
+          callbacks:{
+            label:function(context){
               var datasetLabel = context.dataset.label || ''
-              var currentValue = parseFloat(context.parsed).toFixed(2)
-              var percentage = Math.round((currentValue / sumOfTotalNutritions) * 100)
-  
-              return datasetLabel + ': ' + currentValue + 'g (' + percentage + '%)'
+              var currentValue = parseFloat(context.parsed).toFixed(2) 
+              var percentage = Math.round((currentValue / sumOfTotalNutritions) *100)
+        
+              return datasetLabel + ': '+ currentValue + 'g ('+percentage+'%)'
+            }
+          }
+        } 
+     } 
+   }
+ })
+</script>
+
+
+{% comment %} <div>
+  <select id="foodSelect">
+    <option value="">전체</option>
+    {% for food in nutrition_info_list %}
+      <option value="{{ food.food_name }}">{{ food.food_name }}</option>
+    {% endfor %}
+  </select>
+</div>
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx2 = document.getElementById('myChart')
+  let totalNutrition = JSON.parse('{{ chart_info_json|escapejs }}')
+  const classIndex = '{{ class_index }}'
+  const labels = ['탄수화물', '단백질', '지방']
+  const dataKeys = ['carbohydrate', 'protein', 'fat']
+  $('#foodSelect').change(function() {
+    var selectedFood = $(this).val(); // 선택된 음식 이름 가져오기
+
+    // URL 설정
+    var url;
+    if (selectedFood === '') { // '전체보기' 선택 시
+      url = '/get_all_nutrition_info';
+    } else {
+      url = '/get_nutrition_info';
+    }
+
+    $.ajax({
+      url: url, // 백엔드 엔드포인트
+      type: 'POST',
+      data: { 'food_name': selectedFood },
+      success: function(response) {
+        // 서버로부터 받은 응답 처리
+
+        if (response && typeof response === 'object' && response.carbohydrate && response.protein && response.fat) { 
+          totalNutrition = response;
+        } else {
+          console.error('Invalid data received:', response);
+          return;
+        }
+
+        // 차트 업데이트
+        updateChart();
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+   });
+
+  let myChart; // 전역 변수 추가
+
+  function updateChart() {
+    const data = dataKeys.map((key) => totalNutrition[key])
+   
+    const sumOfTotalNutritions = data.reduce((a, b) => a + b, 0)
+    
+    if (myChart) { // 이미 존재하는 차트 인스턴스가 있다면 파괴
+      myChart.destroy();
+    }
+
+    myChart = new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+             data: data,
+             borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var datasetLabel = context.dataset.label || ''
+                var currentValue = parseFloat(context.parsed).toFixed(2)
+                var percentage = Math.round((currentValue / sumOfTotalNutritions) * 100)
+    
+                return datasetLabel+': '+currentValue+'g ('+percentage+'%)'
+              }
             }
           }
         }
-      }
-    }
-  })
-
-// 버튼 기능
-document.getElementById('update-chart').addEventListener('click', function() {
-
-  const selectedFoods = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(input => input.value)
-
-  fetch('/chart-data-url?selected_foods=' + selectedFoods.join(','))
-    .then(response => response.json())
-    .then(newTotalNutrition => {
-      // 새 데이터로 차트를 업데이트합니다.
-      totalNutrition = newTotalNutrition
-      data = dataKeys.map((key) => totalNutrition[key])
-      myChart.data.datasets[0].data = data
-      myChart.update()
+      }  
     })
-})
-</script>
+  }
+
+  updateChart(); // 페이지 로드 시 차트 초기화
+</script> {% endcomment %}
