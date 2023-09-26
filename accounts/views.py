@@ -3,8 +3,10 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+
 from .models import UserProfile
 from .forms import UserProfileForm
+from .personal_nutrition import bmi_calculator, recommendKcal
 
 # Create your views here.
 
@@ -67,9 +69,16 @@ def profile(request):
     else:
         form = UserProfileForm(instance=profile)
 
+    standard_weight, bmi_value = bmi_calculator(user)
+    daily_kcal, meal_kcal = recommendKcal(user)
+
     context = {
         'form': form,
         'profile': profile,
+        'standard_weight': standard_weight,
+        'bmi_value': bmi_value,
+        'daily_kcal': daily_kcal,
+        'meal_kcal': meal_kcal,
     }
 
     return render(request, 'accounts/profile.html', context)
