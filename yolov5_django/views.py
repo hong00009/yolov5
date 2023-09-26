@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
+from uuid import uuid4 # 고유번호 생성
 from datetime import datetime, timedelta
 import os
 # ▲ 기본 라이브러리만
@@ -92,23 +96,17 @@ def edit_post(request, post_id):
 
 
 @login_required
+@require_POST
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, user=request.user)
 
-    if request.method == 'POST':
-        file_path = os.path.join(settings.MEDIA_ROOT, str(post.image))
+    file_path = os.path.join(settings.MEDIA_ROOT, str(post.image))
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        
-        post.delete()
+    post.delete()
 
-        return redirect('yolov5_django:my_page')
-    context = {
-        'post': post,
-    }
-
-    return render(request, 'yolov5_django/delete_post.html', context)
+    return redirect('yolov5_django:my_page')
 
 
 @login_required
