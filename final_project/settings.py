@@ -139,9 +139,9 @@ AUTH_USER_MODEL = 'accounts.User'
 # 오류에 대한 대응 (You're using the staticfiles app without having set the STATIC_ROOT setting to a filesystem path.)
 # STATIC_ROOT = BASE_DIR / 'static'
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'cloneit' / 'static',
-# ]
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 # STATIC_ROOT = ''
 STATIC_URL = '/static/'
 # STATICFILES_DIRS = ('static',)
