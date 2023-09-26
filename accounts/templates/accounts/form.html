@@ -1,12 +1,15 @@
+
 {% extends 'base.html' %}
 <!--회원가입,로그인 폼-->
+
 {% load bootstrap5 %}
 
 {% block content %}
+<div class="container">
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" class="btn btn-primary" value="제출">
     </form>
-
+</div>
 {% endblock %} 
