@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.utils.timezone import now
+from django.core.paginator import Paginator
 
 from uuid import uuid4 # 고유번호 생성
 from datetime import datetime, timedelta
@@ -17,9 +19,12 @@ from .models import Post
 from accounts.personal_nutrition import save_personal_food_nutrition
 
 # Create your views here.
-
 def index(request):
-    return render(request, 'yolov5_django/index.html')
+    if request.user.is_authenticated:
+        return redirect('yolov5_django:my_page')
+    else:
+        return render(request, 'yolov5_django/index.html')
+
 
 @login_required
 def upload_post(request):
@@ -50,28 +55,30 @@ def upload_post(request):
 @login_required
 def my_page(request):
     form = DateRangeFilterForm(request.GET)
-    posts = Post.objects.filter(user=request.user)
+    all_posts = Post.objects.filter(user=request.user).order_by('-uploaded_at')
+    posts = all_posts
 
-    # 사용자가 날짜 범위를 선택한 경우
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
 
-        # 이미지를 선택한 날짜 범위로 필터링합니다.
         if start_date:
             posts = posts.filter(uploaded_at__gte=start_date)
         if end_date:
-            # end_date를 다음날의 0시 0분 0초로 설정하여 1초 전까지 조회합니다.
-            end_date += timedelta(days=1)  # 다음날로 이동
-            end_date -= timedelta(seconds=1)  # 1초 전까지 조회
+            end_date += timedelta(days=1) 
+            end_date -= timedelta(seconds=1)
             posts = posts.filter(uploaded_at__lte=end_date)
-    
+        
+    # Pagination
+    paginator = Paginator(posts, 20)
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
+
     context = {
         'posts': posts,
         'form': form,
     }
     return render(request, 'yolov5_django/my_page.html', context)
-
 
 @login_required
 def edit_post(request, post_id):

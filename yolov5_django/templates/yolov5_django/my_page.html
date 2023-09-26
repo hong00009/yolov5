@@ -23,7 +23,7 @@
             </a>
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
-                <p>작성일자: {{ post.uploaded_at|date:"Y-m-d" }}</p> 
+                <p>작성일자: {{ post.uploaded_at|date:"Y-m-d"  }}</p> 
             </div>
             <a href="{% url 'yolov5_django:edit_post' post.id %}">수정</a>
             <a href="#" class="delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}">삭제</a>
@@ -32,6 +32,42 @@
     </div>
     {% endfor %}
 </div>
+<footer>
+    <p>
+        <!-- Pagination links -->
+        <div class="pagination" style="text-align: center;">
+            <span class="step-links">
+                {% if posts.has_previous %}
+                <a href="?page=1">&laquo; 처음</a>
+                <a href="?page={{ posts.previous_page_number }}">이전</a>
+                {% endif %}
+
+                {% with next_pages=posts.number|add:2 %}
+                {% if posts.paginator.num_pages > next_pages %}
+                    <span>...</span>
+                {% endif %}
+                {% endwith %}
+
+                {% for i in posts.paginator.page_range %}
+                {% if posts.number == i %}
+                    <span class="current-page">{{ i }}</span>
+                {% elif i > posts.number|add:-2 and i < posts.number|add:3 %}
+                    <a href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+                {% endfor %}
+
+                {% if posts.paginator.num_pages > next_pages %}
+                <span>...</span>
+                {% endif %}
+
+                {% if posts.has_next %}
+                <a href="?page={{ posts.next_page_number }}">다음</a>
+                <a href="?page={{ posts.paginator.num_pages }}">마지막 &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </p>
+</footer>
 {% endif %}      
 
 <!-- Modal pop-up -->

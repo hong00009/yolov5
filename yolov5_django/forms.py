@@ -1,5 +1,6 @@
 from django import forms
 from .models import Post
+from django.utils.timezone import now
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -14,6 +15,18 @@ class EditPostForm(forms.ModelForm):
     title = forms.CharField(required=True)  # 선택적으로 제목 수정 가능하도록
     image = forms.ImageField(required=True)  # 선택적으로 이미지 수정 가능하도록
 
+# class DateRangeFilterForm(forms.Form):
+#     start_date = forms.DateField(label='Start Date', required=False, widget=forms.TextInput(attrs={'type': 'date'}))
+#     end_date = forms.DateField(label='End Date', required=False, widget=forms.TextInput(attrs={'type': 'date'}))
+
 class DateRangeFilterForm(forms.Form):
-    start_date = forms.DateField(label='Start Date', required=False, widget=forms.TextInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(label='End Date', required=False, widget=forms.TextInput(attrs={'type': 'date'}))
+    start_date = forms.DateField(
+        label='Start Date',
+        required=False,
+        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date()})
+    )
+    end_date = forms.DateField(
+        label='End Date',
+        required=False,
+        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date()})
+    )

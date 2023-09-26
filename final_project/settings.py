@@ -145,3 +145,5 @@ STATICFILES_DIRS = [
 # STATIC_ROOT = ''
 STATIC_URL = '/static/'
 # STATICFILES_DIRS = ('static',)
+
+LOGIN_REDIRECT_URL = 'yolov5_django:my_page'
