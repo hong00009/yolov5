@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, EditPostForm, DateRangeFilterForm
 from .models import Post, FoodNutrition
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
 from uuid import uuid4 # 고유번호 생성
 from datetime import datetime, timedelta
 
@@ -90,20 +93,17 @@ def edit_post(request, post_id):
 
 
 @login_required
+@require_POST
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, user=request.user)
 
-    if request.method == 'POST':
-        # 이미지 삭제 로직을 추가
-        image.delete()
+    file_path = os.path.join(settings.MEDIA_ROOT, str(post.image))
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
-        # 삭제가 완료되면 이미지 목록 페이지로 리디렉션
-        return redirect('yolov5_django:my_page')
-    context = {
-        'post': post,
-    }
+    post.delete()
 
-    return render(request, 'yolov5_django/delete_post.html', context)
+    return redirect('yolov5_django:my_page')
 
 
 @login_required

@@ -23,14 +23,119 @@
             </a>
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
-                <p>Uploaded on: {{ post.uploaded_at|date:"Y-m-d" }}</p> 
+                <p>작성일자: {{ post.uploaded_at|date:"Y-m-d" }}</p> 
             </div>
-            <a href="{% url 'yolov5_django:edit_post' post.id %}">Edit</a>
-            <a href="{% url 'yolov5_django:delete_post' post.id %}">Delete</a>
+            <a href="{% url 'yolov5_django:edit_post' post.id %}">수정</a>
+            {% comment %} <a href="{% url 'yolov5_django:delete_post' post.id %}">삭제</a> {% endcomment %}
+            <a href="#" class="delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}">삭제</a>
+            
         </div>
     </div>
     {% endfor %}
 </div>
-{% endif %}            
+{% endif %}      
+
+<!-- Modal pop-up -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>게시글을 삭제하시겠습니까?</p>
+        <button id="confirmDelete">삭제</button>
+        <button id="cancelDelete">취소</button>
+    </div>
+</div>
+
+<style>
+    #deleteModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 999; 
+        text-align: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 300px;
+    }
+
+    .delete-button-yes {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    // JavaScript to handle the pop-up
+    var deleteButtons = document.querySelectorAll(".delete-button");
+    var deleteModal = document.getElementById("deleteModal");
+    var confirmDelete = document.getElementById("confirmDelete");
+    var cancelDelete = document.getElementById("cancelDelete");
+
+    deleteButtons.forEach(function(button) {
+        button.onclick = function() {
+            // Get the post ID and delete URL from data attributes
+            var postId = button.getAttribute("data-post-id");
+            var deleteUrl = button.getAttribute("data-delete-url");
+
+            // Display the modal pop-up
+            deleteModal.style.display = "block";
+
+            // Set the post ID as a data attribute on the confirmation button
+            confirmDelete.setAttribute("data-post-id", postId);
+
+            // Set the delete URL as a data attribute on the confirmation button
+            confirmDelete.setAttribute("data-delete-url", deleteUrl);
+        }
+    });
+
+    confirmDelete.onclick = function() {
+        // Get the post ID and delete URL from the confirmation button
+        var postId = confirmDelete.getAttribute("data-post-id");
+        var deleteUrl = confirmDelete.getAttribute("data-delete-url");
+
+        // Create a form element
+        var form = document.createElement("form");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", deleteUrl);
+
+        // Add a CSRF token input
+        var csrfToken = document.createElement("input");
+        csrfToken.setAttribute("type", "hidden");
+        csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+        csrfToken.setAttribute("value", "{{ csrf_token }}");
+        form.appendChild(csrfToken);
+
+        // Add a post ID input
+        var postIdInput = document.createElement("input");
+        postIdInput.setAttribute("type", "hidden");
+        postIdInput.setAttribute("name", "post_id");
+        postIdInput.setAttribute("value", postId);
+        form.appendChild(postIdInput);
+
+        // Append the form to the document and submit it
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    cancelDelete.onclick = function() {
+        deleteModal.style.display = "none";
+    }
+</script>
+
 
 {% endblock %}
