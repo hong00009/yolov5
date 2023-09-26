@@ -31,7 +31,7 @@ def login(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            return redirect('yolov5_django:index')
+            return redirect('yolov5_django:my_page')
         
     else:
         form = CustomAuthenticationForm()

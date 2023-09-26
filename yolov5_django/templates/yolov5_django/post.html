@@ -7,7 +7,7 @@
 
       <h1>{{ post.title }}</h1>
       <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; max-height:640px;" />
-      <p>작성일: {{ post.uploaded_at|date:'Y-m-d' }}</p>
+      <p>작성일: {{ post.uploaded_at|date:'Y-m-d'  }}</p>
 
       <p>
         결과:{% if food_idx_list %}
