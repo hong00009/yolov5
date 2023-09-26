@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Delete Image</h1>
-  <p>Are you sure you want to delete "{{ image.title }}"?</p>
+  <h1>게시글 삭제</h1>
+  <p>정말 삭제하시겠습니까? "{{ image.title }}"?</p>
   <form method="post">
     {% csrf_token %}
-    <button type="submit">Yes, delete it</button>
+    <button type="submit">삭제</button>
   </form>
-  <a href="{% url 'yolov5_django:my_page' %}">Cancel</a>
+  <a href="{% url 'yolov5_django:my_page' %}">취소</a>
 {% endblock %}

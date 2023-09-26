@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from .yolo_detect import y_detect
 from accounts.personal_nutrition import save_personal_food_nutrition
 from .foodinfo import food_info
-
+import os
+from django.conf import settings
 # Create your views here.
 
 def index(request):
@@ -93,7 +94,10 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, user=request.user)
 
     if request.method == 'POST':
-        post.delete()
+        # 이미지 삭제 로직을 추가
+        image.delete()
+
+        # 삭제가 완료되면 이미지 목록 페이지로 리디렉션
         return redirect('yolov5_django:my_page')
     context = {
         'post': post,
