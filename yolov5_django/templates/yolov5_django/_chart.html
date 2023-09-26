@@ -19,6 +19,7 @@
    }
 </style>
 
+<!-- 그래프 변경 선택 버튼-->
 <div style="display: flex; align-items: center; justify-content: center; margin-top:20px; margin-bottom: 20px;">
   <select id="foodSelect">
     <option value="">전체</option>
@@ -43,6 +44,25 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+  document.getElementById('foodSelect').addEventListener('change', function() {
+    var selectedFood = this.value;
+    
+    // 리스트, 표 숨김
+    document.getElementById('foodList').style.display = 'none';
+    
+    document.querySelectorAll('.food-table').forEach(function(table) {
+      table.style.display = 'none';
+    });
+  
+    if (selectedFood) {
+      // 선택된 음식의 표만 출력
+      document.getElementById(selectedFood).style.display = 'table';
+      
+     } else {
+       // 전체 선택시 전체 음식 리스트 출력
+       document.getElementById('foodList').style.display = 'block';
+     }
+  });
   const ctx2 = document.getElementById('myChart')
   const totalNutrition = JSON.parse('{{ total_chart_info_json|escapejs }}')
   const eachNutrition = JSON.parse('{{ each_chart_info_json|escapejs }}') //#
@@ -51,7 +71,7 @@
   
   //#
   let myChart
-  
+  // 리스트박스 선택값에 따라 그래프 업데이트하는 함수
   function updateChart(foodName) {
     let nutrition
     if (foodName) {
@@ -85,9 +105,9 @@
             data: data,
             borderWidth: 1,
             backgroundColor: [
-            'rgba(54, 162, 235, 0.7)',
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(255, 205, 86, 0.7)'
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 205, 86, 0.5)'
   
             ],
             borderColor: [
@@ -95,7 +115,7 @@
               'rgb(255, 99, 132)',
               'rgb(255, 205, 86)',
             ],
-            hoverOffset: 10
+            hoverOffset: 5
           }
         ]
       },
@@ -118,7 +138,7 @@
       }
     });
 
-// if(graphType === 'pie'), new chart 첫번째 끝
+// 파이그래프 끝
 
   } else if (graphType ==='bar'){ 
     myChart = new Chart(ctx2, {
@@ -130,9 +150,9 @@
           data: data,
           borderWidth: 1,
           backgroundColor: [
-          'rgba(54, 162, 235, 0.7)',
-          'rgba(255, 99, 132, 0.7)',
-          'rgba(255, 205, 86, 0.7)'
+          'rgba(54, 162, 235, 0.5)',
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(255, 205, 86, 0.5)'
           ],
           borderColor: [
             'rgb(54, 162, 235)',
@@ -156,23 +176,20 @@
 }
 
   document.querySelector('form').addEventListener('change', function() {
-    var graphType = document.querySelector('input[name="graphType"]:checked').value;
-
-    if (myChart) {
-       myChart.destroy();
-    }
-
-    updateChart(graphType);
+    // 라디오박스의 선택 값을 가져옴
+    updateChart();
   });
 
-  document.getElementById('foodSelect').addEventListener('change', function () {
-    updateChart(this.value)
+  document.getElementById('foodSelect').addEventListener('change', function() {
+    updateChart(this.value);
   });
-  updateChart()
+
+  updateChart();
   
 </script>
 
 
+<!--영양정보 글자 출력부-->
 <div class="center">
   <ol id="foodList">
     {% for food in nutrition_info_list %}
@@ -228,25 +245,3 @@
     <br>
   {% endfor %}
 </div>
-
-<script>
-  document.getElementById('foodSelect').addEventListener('change', function() {
-    var selectedFood = this.value;
-    
-    // 리스트, 표 숨김
-    document.getElementById('foodList').style.display = 'none';
-    
-    document.querySelectorAll('.food-table').forEach(function(table) {
-      table.style.display = 'none';
-    });
-  
-    if (selectedFood) {
-      // 선택된 음식의 표만 출력
-      document.getElementById(selectedFood).style.display = 'table';
-      
-     } else {
-       // 전체 선택시 전체 음식 리스트 출력
-       document.getElementById('foodList').style.display = 'block';
-     }
-  });
-</script>

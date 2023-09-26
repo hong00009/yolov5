@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import PostForm, EditPostForm, DateRangeFilterForm
-from .models import Post, FoodNutrition
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
 from uuid import uuid4 # 고유번호 생성
 from datetime import datetime, timedelta
-
-from .yolo_detect import y_detect
-from accounts.personal_nutrition import save_personal_food_nutrition
-from .foodinfo import food_info
 import os
-from django.conf import settings
+# ▲ 기본 라이브러리만
+
+# ▼ 자체 제작
+from .forms import PostForm, EditPostForm, DateRangeFilterForm
+from .yolo_detect import y_detect
+from .foodinfo import food_info
+from .models import Post
+from accounts.personal_nutrition import save_personal_food_nutrition
+
 # Create your views here.
 
 def index(request):
