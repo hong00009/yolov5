@@ -26,7 +26,6 @@
                 <p>작성일자: {{ post.uploaded_at|date:"Y-m-d" }}</p> 
             </div>
             <a href="{% url 'yolov5_django:edit_post' post.id %}">수정</a>
-            {% comment %} <a href="{% url 'yolov5_django:delete_post' post.id %}">삭제</a> {% endcomment %}
             <a href="#" class="delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}">삭제</a>
             
         </div>
