@@ -9,15 +9,6 @@
       <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; max-height:640px;" />
       <p>작성일: {{ post.uploaded_at|date:'Y-m-d'  }}</p>
 
-      <p>
-        결과:{% if food_idx_list %}
-          {{ food_idx_list }}
-        {% else %}
-          없음
-        {% endif %}
-      </p>
-
-      <p>{{ food_name_list }}</p>
       <a href="{% url 'yolov5_django:my_page' %}">작성글 보기</a>
     </div>
 
@@ -26,10 +17,8 @@
       {% if food_idx_list and food_idx_list != "" %}
         {% include "yolov5_django/_chart.html" %}
       {% else %}
-        <p>.</p>
+        <p> </p>
       {% endif %}
-    </div>
-
-    
+    </div>    
   </div>
 {% endblock %}
