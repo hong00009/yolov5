@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import PostForm, EditPostForm, DateRangeFilterForm
-from .models import Post, FoodNutrition
 from django.contrib.auth.decorators import login_required
-from uuid import uuid4 # 고유번호 생성
-from datetime import datetime, timedelta
-
-from .yolo_detect import y_detect
-from accounts.personal_nutrition import save_personal_food_nutrition
-from .foodinfo import food_info
-import os
 from django.conf import settings
+from datetime import datetime, timedelta
+import os
+# ▲ 기본 라이브러리만
+
+# ▼ 자체 제작
+from .forms import PostForm, EditPostForm, DateRangeFilterForm
+from .yolo_detect import y_detect
+from .foodinfo import food_info
+from .models import Post
+from accounts.personal_nutrition import save_personal_food_nutrition
+
 # Create your views here.
 
 def index(request):
@@ -94,10 +96,13 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, user=request.user)
 
     if request.method == 'POST':
-        # 이미지 삭제 로직을 추가
-        image.delete()
+        file_path = os.path.join(settings.MEDIA_ROOT, str(post.image))
 
-        # 삭제가 완료되면 이미지 목록 페이지로 리디렉션
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        post.delete()
+
         return redirect('yolov5_django:my_page')
     context = {
         'post': post,
