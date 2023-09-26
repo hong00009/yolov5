@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import UserProfile
 from .forms import UserProfileForm
-from .personal_nutrition import bmi_calculator, recommendKcal
+from .personal_nutrition import bmi_calculator
 
 # Create your views here.
 
@@ -28,6 +28,7 @@ def signup(request):
 
 
 def login(request):
+
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
@@ -53,32 +54,37 @@ def logout(request):
 def profile(request):
     user = request.user
 
-    # 사용자에 대한 프로필이 있는지 확인
     try:
-        # 프로필이 있으면 db에서 기존 정보 불러옴
+        # 프로필이 있는지 확인
         profile = UserProfile.objects.get(user=user)
+        bmi, standard_weight, daily_kcal, meal_kcal = bmi_calculator(user)  
+        ages = profile.age//10*10
     except UserProfile.DoesNotExist:
-        # 프로필이 없는 경우 새로운 프로필 생성
-        profile = UserProfile(user=user)
+        # 프로필이 없으면 None으로 설정
+        profile = bmi = standard_weight = daily_kcal = meal_kcal = ages = None
 
-    # 프로필 업데이트
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
+        
         if form.is_valid():
-            form.save()
+            profile = form.save(commit=False)
+            profile.user = user
+            profile.save()
+            
+            # 데이터 저장 후 새롭게 BMI 계산
+            bmi, standard_weight, daily_kcal, meal_kcal = bmi_calculator(user)
+            ages = profile.age//10*10
+
     else:
         form = UserProfileForm(instance=profile)
 
-    standard_weight, bmi_value = bmi_calculator(user)
-    daily_kcal, meal_kcal = recommendKcal(user)
-
     context = {
         'form': form,
-        'profile': profile,
-        'standard_weight': standard_weight,
-        'bmi_value': bmi_value,
+        'bmi': bmi,
+        'standard_weight': standard_weight, 
         'daily_kcal': daily_kcal,
         'meal_kcal': meal_kcal,
+        'ages': ages,
     }
 
     return render(request, 'accounts/profile.html', context)

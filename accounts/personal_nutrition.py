@@ -1,9 +1,11 @@
 # 게시물에서 검출된 음식객체 수만큼 UserFoodNutritions 영양정보를 DB에 저장하는 함수
-
+# BMI등 건강관련 수치 계산 함수
 from django.shortcuts import render, redirect, get_object_or_404
+from datetime import date
+
 from .models import UserFoodNutritions, UserProfile
 from yolov5_django.models import Post, FoodNutrition
-from datetime import date
+
 
 def save_personal_food_nutrition(user, detected_foods):
     post = Post.objects.filter(user=user).order_by('-uploaded_at').first()
@@ -32,66 +34,69 @@ def bmi_calculator(user):
     gender = user_profile.gender
 
     # 표준 체중 계산
-    if gender is '남성':
-        standard_weight = height * height * 22
+    if gender == '남성':
+        standard_weight = round(height * height * 22, 1)
     else:
-        standard_weight = height * height * 21
+        standard_weight = round(height * height * 21, 1)
 
     # BMI 계산
-    bmi = weight / (height * height)
-
-    return standard_weight, bmi
-
-def recommendKcal(user):
-    user_profile = user.userprofile
+    bmi = round(weight / (height * height), 1)
 
     # 나이계산
-    birthdate = user_profile.birthdate
-    gender = user_profile.gender
-
+    birthdate = user.userprofile.birthdate
     today = date.today()
     age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
 
-    if age >= 10 and age <= 20:
-        if gender == '남자':
+    daily_kcal = 0
+    meal_kcal = 0
+
+    if age < 30: 
+        if gender == '':
             daily_kcal = 2600
             meal_kcal = 870
-        elif gender == '여자':
+        elif gender == 'female':
             daily_kcal = 2100
             meal_kcal = 700
-    elif age >= 30 and age < 40:
-        if gender == '남자':
+    elif 30 <= age < 40:
+        print('30대')
+        if gender == 'male':
             daily_kcal = 2500
             meal_kcal = 820
-        elif gender == '여자':
+        elif gender == 'female':
             daily_kcal = 2000
             meal_kcal = 670
-    elif age >= 40 and age < 50:
-        if gender == '남자':
+            print(gender)
+    elif 40<= age < 50:
+        print('40대')
+        if gender == 'male':
             daily_kcal = 2400
             meal_kcal = 780
-        elif gender == '여자':
+        elif gender == 'female':
             daily_kcal = 1900
             meal_kcal = 630
-    elif age >= 50 and age < 60:
-        if gender == '남자':
+    elif 50 <= age < 60:
+        if gender == 'male':
             daily_kcal = 2200
             meal_kcal = 730
-        elif gender == '여자':
+        elif gender == 'female':
             daily_kcal = 1800
             meal_kcal = 600
     else:
-        # 60대 이상
-        if gender == '남자':
+        if gender == 'male':
             daily_kcal = 2000
             meal_kcal = 650
-        elif gender == '여자':
+        elif gender == 'female':
             daily_kcal = 1600
             meal_kcal = 530
 
-    return daily_kcal, meal_kcal
+    context = {
+        'bmi' : bmi,
+        'standard_weight': standard_weight,
+        'daily_kcal': daily_kcal,
+        'meal_kcal': meal_kcal,
 
-
+    }
+    return bmi, standard_weight, daily_kcal, meal_kcal
 
 
 # 10~20대 남자 권장 칼로리
