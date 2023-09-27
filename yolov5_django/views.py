@@ -76,21 +76,21 @@ def upload_post(request):
             post = form.save(commit=False)
             post.user = request.user
 
-            # 'post_time' contains both date and time
+            # 파일 저장시 이름에 uuid hex적용
             image = request.FILES['image']
             ext = image.name.split('.')[-1]
             uuid = uuid4().hex
             filename = '{}.{}'.format(uuid, ext)
             post.image.name = filename
 
-            post.save()
+            post.save() # 사진먼저저장
 
-            detected_foods = y_detect(post.image.path)  # Detect with saved photos
+            detected_foods = y_detect(post.image.path) # 저장된사진으로 탐지
 
             post.detection_result = detected_foods
-            post.save()  # Save additional detected results
+            post.save()  # 탐지결과 추가 저장
 
-            save_personal_food_nutrition(request.user, detected_foods)  # Save personal nutrition information
+            save_personal_food_nutrition(request.user, post, detected_foods)  # 개인 영양정보 저장
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
     else:
