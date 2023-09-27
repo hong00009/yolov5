@@ -35,21 +35,21 @@ def upload_post(request):
             post = form.save(commit=False)
             post.user = request.user
 
-
+            # 파일 저장시 이름에 uuid hex적용
             image = request.FILES['image']
             ext = image.name.split('.')[-1]
             uuid = uuid4().hex
             filename = '{}.{}'.format(uuid, ext)
             post.image.name = filename
 
-            post.save()
+            post.save() # 사진먼저저장
 
-            detected_foods = y_detect(post.image.path)
+            detected_foods = y_detect(post.image.path) # 저장된사진으로 탐지
 
             post.detection_result = detected_foods
-            post.save()
+            post.save()  # 탐지결과 추가 저장
 
-            save_personal_food_nutrition(request.user, detected_foods)
+            save_personal_food_nutrition(request.user, post, detected_foods)  # 개인 영양정보 저장
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
     else:
@@ -131,7 +131,7 @@ def detail_post(request, post_id):
 
     print('**', post.user,'의 detection_result:', post.detection_result)
     
-    food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json = food_info(post)
+    food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json, percentage = food_info(post)
 
     context = {
         'post': post,
@@ -141,6 +141,7 @@ def detail_post(request, post_id):
         'total_chart_info_json': total_chart_info_json,
         'each_chart_info_json':each_chart_info_json,
         'nutrition_info_list':nutrition_info_list,
+        'percentage': percentage,
     }
     
     return render(request, 'yolov5_django/post.html', context)

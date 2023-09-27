@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.contrib.auth import get_user_model
-from .models import UserProfile
 from django import forms
+
+from .models import UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta): # UCF 상속, model만 내것으로수정하고 나머지 그대로
@@ -24,7 +25,8 @@ class UserProfileForm(forms.ModelForm):
         ('male', '남성'),
         ('female', '여성'),
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect)
+    
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect(attrs={'class': 'inline-radio'}))
     gender.label = '성별'
     class Meta:
         model = UserProfile
