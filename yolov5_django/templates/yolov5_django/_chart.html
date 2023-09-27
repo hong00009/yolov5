@@ -69,26 +69,91 @@
   const classIndex = '{{ class_index }}'
   const labels = ['탄수화물', '단백질', '지방']
   
+  const numFoods = Object.keys(eachNutrition).length;
+  // 색상 알파값 동적 변경 함수
+  function generateAlphaValues(numFoods) {
+    const alphaValues = [];
+    for (let i = 0; i < numFoods; i++) {
+      const alpha = 0.2 + i * 0.1; 
+      alphaValues.push(alpha);
+    }
+    return alphaValues;
+  }
+
   //#
   let myChart
   // 리스트박스 선택값에 따라 그래프 업데이트하는 함수
   function updateChart(foodName) {
-    let nutrition
+    
+    let nutrition;
+
     if (foodName) {
       // 특정 음식 선택시 해당음식만
-      nutrition = eachNutrition[foodName]
+      nutrition = eachNutrition[foodName];
     } else {
       // 음식선택 X > 전체
-      nutrition = totalNutrition
+      nutrition = totalNutrition;
     }
+
     //#
-  
-    const dataKeys = ['carbohydrate', 'protein', 'fat']
-    const data = dataKeys.map((key) => nutrition[key])
-  
-    const sumOfTotalNutritions = data.reduce((a, b) => a + b, 0)
+    const dataKeys = ['carbohydrate', 'protein', 'fat'];
+    const dataD = dataKeys.map((key) => nutrition[key]);
+    const sumOfTotalNutritions = dataD.reduce((a, b) => a + b, 0);
   
     var graphType = document.querySelector('input[name = "graphType"]:checked').value;
+
+
+    const numFoods = Object.keys(eachNutrition).length;
+    const carbohydrateAlphas = generateAlphaValues(numFoods);
+    const proteinAlphas = generateAlphaValues(numFoods);
+    const fatAlphas = generateAlphaValues(numFoods);
+
+    // 전체 누적 막대그래프용
+    stackedDataset = Object.keys(eachNutrition).map((foodName, index) => ({
+      label: foodName,
+      data: [
+        eachNutrition[foodName].carbohydrate,
+        eachNutrition[foodName].fat,
+        eachNutrition[foodName].protein
+      ],
+      backgroundColor: [
+        `rgba(54, 162, 235, ${carbohydrateAlphas[index]})`,
+        `rgba(255, 99, 132, ${fatAlphas[index]})`,
+        `rgba(255, 205, 86, ${proteinAlphas[index]})`
+      ],
+      hoverOffset: 10
+    }));
+
+    // 개별 음식 막대그래프용
+    eachDataset = [
+    {
+      label: '',
+      data: dataD,
+      borderWidth: 1,
+      backgroundColor: [
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(255, 205, 86, 0.5)'
+      ],
+      borderColor: [
+        'rgb(54, 162, 235)',
+        'rgb(255, 99, 132)',
+        'rgb(255, 205, 86)',
+      ],
+      hoverOffset: 10
+    }];
+
+    let customDataset;
+    let stackStatus;
+    if (foodName) {
+      // 특정 음식 선택시 해당음식만
+      customDataset = eachDataset;
+      stackStatus = false;
+    } else {
+      // 음식선택 X > 전체
+      customDataset = stackedDataset;
+      stackStatus = true;
+    }
 
     if (myChart) {
       // 리스트박스에서 새값 선택시 다시그리기위해 기존차트 지우기
@@ -102,7 +167,7 @@
         labels: labels,
         datasets: [
           {
-            data: data,
+            data: dataD,
             borderWidth: 1,
             backgroundColor: [
             'rgba(54, 162, 235, 0.5)',
@@ -139,48 +204,57 @@
     });
 
 // 파이그래프 끝
-
+    //막대그래프
   } else if (graphType ==='bar'){ 
     myChart = new Chart(ctx2, {
       type: 'bar',
       data: {
-        labels:labels,
-        datasets:[{
-          label:'3대 영양소',
-          data: data,
-          borderWidth: 1,
-          backgroundColor: [
-          'rgba(54, 162, 235, 0.5)',
-          'rgba(255, 99, 132, 0.5)',
-          'rgba(255, 205, 86, 0.5)'
-          ],
-          borderColor: [
-            'rgb(54, 162, 235)',
-            'rgb(255, 99, 132)',
-            'rgb(255, 205, 86)',
-          ],
-        }]
+        labels: labels,
+        datasets: customDataset,
       },
       options: {
           scales: {
               x: {
-                  stacked: true
+                  stacked: stackStatus,
               },
               y: {
-                  stacked: true
-              }
-          }
+                stacked: stackStatus,
+                beginAtZero: true, 
+                ticks: {
+                  callback: function(value, index, values) {
+                    return value + 'g'; 
+                  },
+                },
+              },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  console.log(context.dataset.label, context.formattedValue);
+                  const label = context.dataset.label || '';
+                  const value = context.dataset.data[context.dataIndex];
+                  return context.dataset.label + ': ' + context.formattedValue + 'g';
+                },
+              },
+            },
+          },
       }
   });
+  
   }
 }
 
   document.querySelector('form').addEventListener('change', function() {
-    // 라디오박스의 선택 값을 가져옴
+    // 라디오버튼의 선택 값을 가져옴
     updateChart();
   });
 
   document.getElementById('foodSelect').addEventListener('change', function() {
+    // 리스트박스의 선택값을 가져옴
     updateChart(this.value);
   });
 
