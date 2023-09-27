@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.utils.timezone import now
 from django.core.paginator import Paginator
 from django.db.models import F
+import logging
 
 from uuid import uuid4 # 고유번호 생성
 from datetime import datetime, timedelta
@@ -18,7 +19,7 @@ from .yolo_detect import y_detect
 from .foodinfo import food_info
 from .models import Post
 from accounts.personal_nutrition import save_personal_food_nutrition
-
+logger = logging.getLogger(__name__)
 # Create your views here.
 def index(request):
     if request.user.is_authenticated:
@@ -52,8 +53,13 @@ def upload_post(request):
             save_personal_food_nutrition(request.user, post, detected_foods)  # 개인 영양정보 저장
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
+        if not form.is_valid():
+            print(form.errors)
+            print(form['title'].errors)
     else:
         form = PostForm()
+        logger.error("폼이유효하지않음 %s", form.errors)
+        
     
     context = {'form': form}
     return render(request, 'yolov5_django/upload_post.html', context)

@@ -9,7 +9,11 @@
       <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; max-height:640px;" />
       <p>{{ post.text_content }}</p>
       <p>식사 시간: {{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.hour }}시</p>
+<<<<<<< Updated upstream
       
+=======
+       
+>>>>>>> Stashed changes
       <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-primary">마이페이지</a>
       <a href="#" class="btn btn-danger delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}">삭제</a>
     </div>
