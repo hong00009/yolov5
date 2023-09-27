@@ -36,7 +36,7 @@ def bmi_calculator(user):
     gender = user_profile.gender
 
     # 표준 체중 계산
-    if gender == '남성':
+    if gender == 'male':
         standard_weight = round(height * height * 22, 1)
     else:
         standard_weight = round(height * height * 21, 1)
@@ -44,10 +44,7 @@ def bmi_calculator(user):
     # BMI 계산
     bmi = round(weight / (height * height), 1)
 
-    # 나이계산
-    birthdate = user.userprofile.birthdate
-    today = date.today()
-    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    age = user.userprofile.age
 
     daily_kcal = 0
     meal_kcal = 0
@@ -60,7 +57,6 @@ def bmi_calculator(user):
             daily_kcal = 2100
             meal_kcal = 700
     elif 30 <= age < 40:
-        print('30대')
         if gender == 'male':
             daily_kcal = 2500
             meal_kcal = 820
@@ -69,7 +65,6 @@ def bmi_calculator(user):
             meal_kcal = 670
             print(gender)
     elif 40<= age < 50:
-        print('40대')
         if gender == 'male':
             daily_kcal = 2400
             meal_kcal = 780
