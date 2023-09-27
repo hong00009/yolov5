@@ -6,9 +6,10 @@ from datetime import datetime
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=100)
-    text_content = models.TextField(max_length=255, default="간단한 메모 작성 가능합니다.")
+    text_content = models.TextField(max_length=255, blank=True)
     image = models.ImageField()
     post_time = models.DateTimeField(default=datetime.now)
+    hour = models.IntegerField(default=0)
 
     detection_result = models.TextField(blank=True, null=True)
 
