@@ -1,12 +1,14 @@
 from django.db import models
 from django.conf import settings
+from datetime import datetime
 
 # Create your models here.
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=100)
+    text_content = models.TextField(max_length=255, default="간단한 메모 작성 가능합니다.")
     image = models.ImageField()
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    post_time = models.DateTimeField(default=datetime.now)
 
     detection_result = models.TextField(blank=True, null=True)
 
