@@ -9,13 +9,24 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'text_content', 'image', 'post_time', 'hour']
+        labels = {
+            'title': '제목',
+            'image': '이미지',
+        }
+
+    text_content = forms.CharField(
+        widget=forms.Textarea(attrs={'cols': 30, 'rows': 1}),
+        label='식사 관련 내용',)    
 
     post_time = forms.DateField(
         initial=datetime.now().date(),
-        widget=DateInput(attrs={'type': 'date'})
+        widget=DateInput(attrs={'type': 'date'}),
+        label='식사 날짜',
     )
-
-    hour = forms.IntegerField()
+    # 시간 선택 범위 설정
+    HOUR_CHOICES = [(str(hour), str(hour)) for hour in range(24)]
+    
+    hour = forms.ChoiceField(choices=HOUR_CHOICES, label='시간')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -25,7 +36,7 @@ class PostForm(forms.ModelForm):
         if post_time is not None and hour is not None:
             try:
              
-                post_time = datetime.combine(post_time, datetime.min.time()) + timedelta(hours=hour)
+                post_time = datetime.combine(post_time, datetime.min.time()) + timedelta(hours=int(hour))
             except ValueError:
                 raise forms.ValidationError('Invalid date or time')
 
@@ -43,12 +54,12 @@ class EditPostForm(forms.ModelForm):
 
 class DateRangeFilterForm(forms.Form):
     start_date = forms.DateField(
-        label='Start Date',
+        label='시작 날짜',
         required=False,
-        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date()})
+        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date(), 'class': 'custom-date-input'})
     )
     end_date = forms.DateField(
-        label='End Date',
+        label='마지막 날짜',
         required=False,
-        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date()})
+        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date(), 'class': 'custom-date-input'})
     )

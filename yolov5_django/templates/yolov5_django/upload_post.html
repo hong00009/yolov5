@@ -1,12 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<h1>음식 사진을 업로드 하세요.</h1>
-<form method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+
+<h1>음식 사진을 업로드 하세요</h1>
+<form method="post" enctype="multipart/form-data" onsubmit="showLoading()" class="row g-3">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">작성하기</button>
+    <div class="col-md-3">
+        <label for="{{ form.title.id }}" class="form-label">제목:</label>
+        {{ form.title }}
+    </div>
+    <div class="col-md-9">
+        <label for="{{ form.text_content.id }}" class="form-label">식사 내용 메모:</label>
+        {{ form.text_content }}
+    </div>
+    <div class="col-md-3">
+        <label for="{{ form.post_time.id }}" class="form-label">식사 날짜:</label>
+        {{ form.post_time }}
+    </div>
+    <div class="col-md-3">
+        <label for="{{ form.hour.id }}" class="form-label">식사 시간:</label>
+        {{ form.hour }}
+    </div>
+    
+    <div class="col-12">
+        <label for="{{ form.image.id }}" class="form-label">이미지:</label>
+        {{ form.image }}
+    </div>
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">작성하기</button>
+    </div>
 </form>
+
+
 
 <!--분석중-->
 <div id="spinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
