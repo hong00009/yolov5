@@ -6,7 +6,7 @@ from yolov5_django.models import Post, FoodNutrition
 from datetime import datetime
 
 def save_personal_food_nutrition(user, detected_foods):
-    post = Post.objects.filter(user=user).order_by('-year', '-month', '-day', '-hour').first()
+    post = Post.objects.filter(user=user).order_by('-post_time').first()
 
     if detected_foods is not None:
         food_list = [int(index) for index in detected_foods.split(",")]
@@ -20,10 +20,7 @@ def save_personal_food_nutrition(user, detected_foods):
 
                 nutrition_info = each_food_nutris,
                 
-                datetime=datetime(
-                    year=post.year,
-                    month=post.month,
-                    day=post.day,
-                    hour=post.hour,)
+                datetime=post.post_time
+
             )
             nutrition_info.save()

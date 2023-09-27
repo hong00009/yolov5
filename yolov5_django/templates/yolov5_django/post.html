@@ -8,7 +8,7 @@
       <h1>{{ post.title }}</h1>
       <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; max-height:640px;" />
       <p>{{ post.text_content }}</p>
-      <p>식사 시간: {{ post.year }}년 {{ post.month }}월 {{ post.day }}일 {{ post.hour }}시</p>
+      <p>식사 시간: {{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.post_time|date:"H" }}시</p>
        
       <p>
         결과:{% if food_idx_list %}

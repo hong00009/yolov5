@@ -8,12 +8,8 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     text_content = models.TextField(max_length=255, default="간단한 메모 작성 가능합니다.")
     image = models.ImageField()
-    year = models.IntegerField(default=2023)
-    month = models.IntegerField(default=9)
-    day = models.IntegerField(default=1)
-    hour = models.IntegerField(default=1)
-    # uploaded_at = models.DateTimeField(auto_now_add=True)
-    
+    post_time = models.DateTimeField(default=datetime.now)
+
     detection_result = models.TextField(blank=True, null=True)
 
     def __str__(self):

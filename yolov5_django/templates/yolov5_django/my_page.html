@@ -23,7 +23,7 @@
             </a>
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
-                <p>식사 시간: {{ post.year }}년 {{ post.month }}월 {{ post.day }}일 {{ post.hour }}시</p> 
+                <p>식사 시간: {{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.post_time|date:"H" }}시</p>
             </div>
             <a href="{% url 'yolov5_django:edit_post' post.id %}">수정</a>
             <a href="#" class="delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}">삭제</a>

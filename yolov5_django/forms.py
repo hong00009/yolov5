@@ -1,28 +1,31 @@
 from django import forms
 from .models import Post
 from django.utils.timezone import now
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.forms import DateInput
+
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'text_content', 'image', 'year', 'month', 'day', 'hour',]
+        fields = ['title', 'text_content', 'image', 'post_time', 'hour']
 
-    year = forms.IntegerField(initial=datetime.now().year)
-    month = forms.IntegerField(initial=datetime.now().month)
-    day = forms.IntegerField(initial=datetime.now().day)
-    hour = forms.IntegerField(initial=datetime.now().hour)
+    post_time = forms.DateField(
+        initial=datetime.now().date(),
+        widget=DateInput(attrs={'type': 'date'})
+    )
+
+    hour = forms.IntegerField()
 
     def clean(self):
         cleaned_data = super().clean()
-        year = cleaned_data.get('year')
-        month = cleaned_data.get('month')
-        day = cleaned_data.get('day')
+        post_time = cleaned_data.get('post_time')
         hour = cleaned_data.get('hour')
 
-        if year is not None and month is not None and day is not None and hour is not None:
+        if post_time is not None and hour is not None:
             try:
-                post_time = datetime(year, month, day, hour)
+             
+                post_time = datetime.combine(post_time, datetime.min.time()) + timedelta(hours=hour)
             except ValueError:
                 raise forms.ValidationError('Invalid date or time')
 
