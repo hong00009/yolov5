@@ -39,4 +39,5 @@ class UserFoodNutritions(models.Model):
     datetime = models.DateTimeField() # 식사시간
 
     def __str__(self):
-        return f"{self.user.username} - {self.datetime} - {self.post} 섭취영양정보"
+        datetime_reshape = self.datetime.strftime("%y%m%d_%H")
+        return f"{datetime_reshape} - {self.user.username} - {self.post} - {self.nutrition_info.food_name if self.nutrition_info else None}"

@@ -12,7 +12,8 @@ from .chart import chart
 def food_info(post):
     if post.detection_result is None:
         #검출된 객체가 없으면
-        return 0, 0, 0, 0
+        print('**객체검출X')
+        return 0, 0, 0, 0, 0
     
     # 검출결과 문자열에서 음식의 class idx (int형) 개별 추출하여 리스트에 저장
     class_idx_list = [int(class_idx) for class_idx in post.detection_result.split(',')]
