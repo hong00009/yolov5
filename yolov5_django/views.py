@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils.timezone import now
 from django.core.paginator import Paginator
+from django.db.models import F
 
 from uuid import uuid4 # 고유번호 생성
 from datetime import datetime, timedelta
@@ -26,6 +27,47 @@ def index(request):
         return render(request, 'yolov5_django/index.html')
 
 
+# @login_required
+# def upload_post(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+
+#             year = form.cleaned_data['year']
+#             month = form.cleaned_data['month']
+#             day = form.cleaned_data['day']
+#             hour = form.cleaned_data['hour']
+
+#             post_time = datetime(year, month, day, hour)
+
+#             post = form.save(commit=False)
+#             post.user = request.user
+#             post.post_time = post_time
+
+#             image = request.FILES['image']
+#             ext = image.name.split('.')[-1]
+#             uuid = uuid4().hex
+#             filename = '{}.{}'.format(uuid, ext)
+#             post.image.name = filename
+
+#             post.save()
+
+#             detected_foods = y_detect(post.image.path) # 저장된 사진으로 detect
+#             # detected_foods = None 또는 문자열(숫자1개/숫자,숫자 여러개)
+
+#             post.detection_result = detected_foods
+#             post.save() # detect된 결과 추가 저장
+
+#             save_personal_food_nutrition(post.user, detected_foods) # 개인 영양 정보 저장
+
+#             return redirect('yolov5_django:detail_post', post_id=post.id)
+#     else:
+#         form = PostForm()
+#     context = {
+#         'form': form,
+#     }
+#     return render(request, 'yolov5_django/upload_post.html', context)
+
 @login_required
 def upload_post(request):
     if request.method == 'POST':
@@ -33,29 +75,79 @@ def upload_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
-            post.uploaded_at = datetime.now()
-            post.save() # 사진 먼저 저장
 
-            detected_foods = y_detect(post.image.path) # 저장된 사진으로 detect
-            # detected_foods = None 또는 문자열(숫자1개/숫자,숫자 여러개)
+            # 'post_time' contains both date and time
+            image = request.FILES['image']
+            ext = image.name.split('.')[-1]
+            uuid = uuid4().hex
+            filename = '{}.{}'.format(uuid, ext)
+            post.image.name = filename
+
+            post.save()
+
+            detected_foods = y_detect(post.image.path)  # Detect with saved photos
 
             post.detection_result = detected_foods
-            post.save() # detect된 결과 추가 저장
+            post.save()  # Save additional detected results
 
-            save_personal_food_nutrition(post.user, detected_foods) # 개인 영양 정보 저장
+            save_personal_food_nutrition(request.user, detected_foods)  # Save personal nutrition information
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
     else:
         form = PostForm()
-    context = {
-        'form': form,
-    }
+    
+    context = {'form': form}
     return render(request, 'yolov5_django/upload_post.html', context)
+
+# @login_required
+# def my_page(request):
+#     form = DateRangeFilterForm(request.GET)
+    
+#     all_posts = Post.objects.filter(user=request.user).annotate(
+#         combined_date=F('year') * 1000000 + F('month') * 10000 + F('day') * 100 + F('hour')
+#     ).order_by('-combined_date')
+    
+#     posts = all_posts
+
+#     if form.is_valid():
+#         start_date = form.cleaned_data['start_date']
+#         end_date = form.cleaned_data['end_date']
+
+#         if start_date:
+
+#             start_datetime = (
+#                 start_date.year * 1000000 +
+#                 start_date.month * 10000 +
+#                 start_date.day * 100
+#             )
+#             posts = posts.filter(combined_date__gte=start_datetime)
+
+#         if end_date:
+
+#             end_datetime = (
+#                 end_date.year * 1000000 +
+#                 end_date.month * 10000 +
+#                 end_date.day * 100 +
+#                 23
+#             )
+#             posts = posts.filter(combined_date__lte=end_datetime)
+
+#     # Pagination
+#     paginator = Paginator(posts, 20)
+#     page_number = request.GET.get('page')
+#     posts = paginator.get_page(page_number)
+
+#     context = {
+#         'posts': posts,
+#         'form': form,
+#     }
+#     return render(request, 'yolov5_django/my_page.html', context)
 
 @login_required
 def my_page(request):
     form = DateRangeFilterForm(request.GET)
-    all_posts = Post.objects.filter(user=request.user).order_by('-uploaded_at')
+    
+    all_posts = Post.objects.filter(user=request.user).order_by('-post_time')
     posts = all_posts
 
     if form.is_valid():
@@ -63,12 +155,13 @@ def my_page(request):
         end_date = form.cleaned_data['end_date']
 
         if start_date:
-            posts = posts.filter(uploaded_at__gte=start_date)
+            posts = posts.filter(post_time__gte=start_date)
+
         if end_date:
-            end_date += timedelta(days=1) 
+            end_date += timedelta(days=1)
             end_date -= timedelta(seconds=1)
-            posts = posts.filter(uploaded_at__lte=end_date)
-        
+            posts = posts.filter(post_time__lte=end_date)
+
     # Pagination
     paginator = Paginator(posts, 20)
     page_number = request.GET.get('page')

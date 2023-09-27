@@ -3,9 +3,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import UserFoodNutritions
 from yolov5_django.models import Post, FoodNutrition
+from datetime import datetime
 
 def save_personal_food_nutrition(user, detected_foods):
-    post = Post.objects.filter(user=user).order_by('-uploaded_at').first()
+    post = Post.objects.filter(user=user).order_by('-post_time').first()
 
     if detected_foods is not None:
         food_list = [int(index) for index in detected_foods.split(",")]
@@ -19,6 +20,7 @@ def save_personal_food_nutrition(user, detected_foods):
 
                 nutrition_info = each_food_nutris,
                 
-                datetime=post.uploaded_at
+                datetime=post.post_time
+
             )
             nutrition_info.save()
