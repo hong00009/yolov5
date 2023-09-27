@@ -10,15 +10,6 @@
       <p>{{ post.text_content }}</p>
       <p>식사 시간: {{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.post_time|date:"H" }}시</p>
        
-      <p>
-        결과:{% if food_idx_list %}
-          {{ food_idx_list }}
-        {% else %}
-          없음
-        {% endif %}
-      </p>
-
-      <p>{{ food_name_list }}</p>
       <a href="{% url 'yolov5_django:my_page' %}">작성글 보기</a>
     </div>
 

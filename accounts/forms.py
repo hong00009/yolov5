@@ -24,7 +24,8 @@ class UserProfileForm(forms.ModelForm):
         ('male', '남성'),
         ('female', '여성'),
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect)
+    
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect(attrs={'class': 'inline-radio'}))
     gender.label = '성별'
     class Meta:
         model = UserProfile

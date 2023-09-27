@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Page Content-->
+<div class="container px-4 px-lg-5">
+    <!-- Heading Row-->
+    <div class="row gx-4 gx-lg-5 align-items-center my-5">
+        <div class="col-lg-5">
+            <h1 class="font-weight-light">영양시치</h1>
+            <p>당신의 영양섭취 정보를 확인하세요.</p>
+            <p>음식의 사진을 촬영하여 업로드하세요.</p>
+            <p>AI가 사진을 분석하여 정보를 제공합니다.</p>
+
+            {% if user.is_authenticated %}
+            
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'accounts:login' %}">로그인</a>
+            <a class="btn btn-secondary" href="{% url 'accounts:signup' %}">회원가입</a>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <img class="img-fluid rounded mb-4 mb-lg-0"
+                src="https://dimg.donga.com/wps/NEWS/IMAGE/2017/02/22/83000466.1.jpg" alt="..." />
+        </div>
+
+    </div>
+    <!-- Call to Action-->
+    <!-- <div class="card text-white bg-secondary my-5 py-4 text-center">
+                <div class="card-body"><h2 class="text-white m-0">---</h2></div>
+            </div> -->
+    <!-- Content Row-->
+    <div class="row gx-4 gx-lg-5">
+
+
+    </div>
+</div>
+<!-- Footer-->
+<footer class="py-2 bg-dark">
+    <div class="container px-4 px-lg-5">
+        <p class="m-0 text-center text-white">Copyright &copy; 영양시치 2023</p>
+    </div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<!-- <script src="/static/index_sample/js/scripts.js"></script> -->
+{% endblock %}
