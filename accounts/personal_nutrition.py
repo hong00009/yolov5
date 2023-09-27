@@ -1,15 +1,10 @@
 # 게시물에서 검출된 음식객체 수만큼 UserFoodNutritions 영양정보를 DB에 저장하는 함수
 # BMI등 건강관련 수치 계산 함수
-from django.shortcuts import render, redirect, get_object_or_404
-from datetime import date
-
-from .models import UserFoodNutritions, UserProfile
-from yolov5_django.models import Post, FoodNutrition
-from datetime import datetime
+from .models import UserFoodNutritions
+from yolov5_django.models import FoodNutrition
 
 
-def save_personal_food_nutrition(user, detected_foods):
-    post = Post.objects.filter(user=user).order_by('-post_time').first()
+def save_personal_food_nutrition(user, post, detected_foods):
 
     if detected_foods is not None:
         food_list = [int(index) for index in detected_foods.split(",")]
@@ -23,8 +18,7 @@ def save_personal_food_nutrition(user, detected_foods):
 
                 nutrition_info = each_food_nutris,
                 
-                datetime=post.post_time
-
+                datetime = post.post_time,
             )
             nutrition_info.save()
 
@@ -63,7 +57,6 @@ def bmi_calculator(user):
         elif gender == 'female':
             daily_kcal = 2000
             meal_kcal = 670
-            print(gender)
     elif 40<= age < 50:
         if gender == 'male':
             daily_kcal = 2400
