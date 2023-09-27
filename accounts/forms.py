@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.contrib.auth import get_user_model
-from .models import UserProfile
 from django import forms
+
+from .models import UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta): # UCF 상속, model만 내것으로수정하고 나머지 그대로

@@ -23,7 +23,7 @@ def food_info(post):
     food_name_list = [each_food.food_name for each_food in nutrition_info_list]
     # 모든 음식 이름 추출하여 리스트로 저장
 
-    total_chart_info_json, each_chart_info_json = chart(nutrition_info_list)
+    total_chart_info_json, each_chart_info_json, percentage = chart(nutrition_info_list)
     # 차트에 그릴 정보 json형식으로 반환받음
 
-    return food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json
+    return food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json, percentage

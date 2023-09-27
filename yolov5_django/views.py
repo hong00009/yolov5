@@ -215,7 +215,7 @@ def detail_post(request, post_id):
 
     print('**', post.user,'의 detection_result:', post.detection_result)
     
-    food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json = food_info(post)
+    food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json, percentage = food_info(post)
 
     context = {
         'post': post,
@@ -225,6 +225,7 @@ def detail_post(request, post_id):
         'total_chart_info_json': total_chart_info_json,
         'each_chart_info_json':each_chart_info_json,
         'nutrition_info_list':nutrition_info_list,
+        'percentage': percentage,
     }
     
     return render(request, 'yolov5_django/post.html', context)
