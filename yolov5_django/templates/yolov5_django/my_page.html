@@ -9,14 +9,22 @@
             <a href="{% url 'yolov5_django:upload_post' %}" class="btn btn-warning"><i class="fa-solid fa-camera"></i></a>
             
             <form method="GET" class="d-inline-flex align-items-center">
+
                 {{ form.start_date }} &nbsp;~&nbsp;{{ form.end_date }}
                 <button type="submit" class="btn btn-light"><i class="fa-regular fa-calendar-check"></i></button>
                 <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-light"><i class="fa-regular fa-calendar-xmark"></i></a>
             </form>
-
-            <a href="{% url 'accounts:profile' %}" class="btn btn-light"><i class="fa-solid fa-user-gear"></i></a>
+                        <a href="{% url 'accounts:profile' %}" class="btn btn-light"><i class="fa-solid fa-user-gear"></i></a>
         </div>
     </div>
+</div>
+
+<div class="text-center mt-3">
+    {% if total_posts_count > 0 %}
+        <p>{{ user }}님의 식단일지</p>
+    {% else %}
+        <p> 식단일지를 등록해주세요.</p>
+    {% endif %}
 </div>
 
 

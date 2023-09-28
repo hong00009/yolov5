@@ -1,17 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils.timezone import now
 from django.core.paginator import Paginator
-from django.db.models import F
 import logging
 from django.db.models.functions import ExtractWeek
-
-
 from uuid import uuid4 # 고유번호 생성
-from datetime import datetime, timedelta
+from datetime import timedelta
 import os
 # ▲ 기본 라이브러리만
 
@@ -22,6 +18,7 @@ from .foodinfo import food_info
 from .models import Post
 from accounts.personal_nutrition import save_personal_food_nutrition
 logger = logging.getLogger(__name__)
+
 # Create your views here.
 def index(request):
     if request.user.is_authenticated:
@@ -74,7 +71,9 @@ def my_page(request):
     posts = Post.objects.filter(user=request.user).order_by('-post_time')
 
     postw = Post.objects.annotate(week=ExtractWeek('post_time')).order_by('week')
-    filter_applied = False
+    total_posts = Post.objects.filter(user=request.user).count()
+
+    filter_O = False
 
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
@@ -82,13 +81,15 @@ def my_page(request):
 
         if start_date:
             posts = posts.filter(post_time__gte=start_date)
-            filter_applied = True
+            filter_O = True
 
         if end_date:
             end_date += timedelta(days=1)
             end_date -= timedelta(seconds=1)
             posts = posts.filter(post_time__lte=end_date)
-            filter_applied = True
+            filter_O = True
+
+    filtered_posts = posts.count()
 
     # 페이지 설정
     paginator = Paginator(posts, 8)
@@ -99,7 +100,9 @@ def my_page(request):
         'posts': posts,
         'form': form,
         'postw': postw,
-        'filter_applied': filter_applied,
+        'filter_O': filter_O,
+        'total_posts_count': total_posts,
+        'filtered_posts_count' : filtered_posts,
     }
     return render(request, 'yolov5_django/my_page.html', context)
 
