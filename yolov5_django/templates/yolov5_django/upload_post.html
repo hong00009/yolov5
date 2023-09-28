@@ -2,20 +2,19 @@
 {% block content %}
 {% load static %}
 <div class="container mt-5">
-    <h3>식단 일지 작성</h3>
-    <div class="container mt-4">
+    <h4 class="mb-3">식단 일지 작성</h4>
         <form method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
             {% csrf_token %}
             <div class="mb-3">
-                <input type="text" class="form-control" id="titleInput" name="title" >
+                <input type="text" class="form-control" id="titleInput" name="title" required>
             </div>
             <div class="mb-3">
-                <textarea class="form-control" id="textInput" rows="6" name="text_content"></textarea>
+                <textarea class="form-control" id="textInput" rows="6" name="text_content" required></textarea>
                 <div id="textHelp" class="form-text">나만의 식단 일지를 작성해보세요</div>
             </div>
             <div class="mb-3">
-                <input type="date" id="date" name="post_time">
-                <select id="select" name="hour">
+                <input type="date" id="date" name="post_time" required>
+                <select class="js-example-basic-single" name="hour" required>
                     <option value="0">00</option>
                     <option value="1">01</option>
                     <option value="2">02</option>
@@ -43,11 +42,10 @@
                     </select>시
             </div>
             <div class="mb-3">
-                <input class="form-control form-control-sm" id="formFile" type="file" name="image">
+                <input class="form-control form-control-sm" id="formFile" type="file" name="image" accept="image/*" required>
             </div>
             <button type="submit" class="btn btn-primary">작성</button>
         </form>
-    </div>
 </div>
 
 

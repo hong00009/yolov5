@@ -4,7 +4,7 @@ from datetime import datetime
 
 # Create your models here.
 class Post(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     text_content = models.TextField(max_length=255, blank=True)
     image = models.ImageField()

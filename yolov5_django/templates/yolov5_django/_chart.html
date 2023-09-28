@@ -301,13 +301,13 @@
   </ol>
 
   {% for food in nutrition_info_list %}
-    <table id="{{ food.food_name }}" class="food-table" style="display: none;">
+    <table id="{{ food.food_name }}" class="food-table " style="display: none;">
       <thead>
         <tr>
           <th colspan="2">{{ food.food_name }}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
         <tr>
           <td>중량(1인분 표준)</td>
           <td>{{ food.weight }}g</td>

@@ -16,18 +16,22 @@ class PostForm(forms.ModelForm):
 
     text_content = forms.CharField(
         widget=forms.Textarea(attrs={'cols': 30, 'rows': 1}),
-        label='식사 관련 내용',)    
+        )    
 
     post_time = forms.DateField(
         initial=datetime.now().date(),
         widget=DateInput(attrs={'type': 'date'}),
-        label='식사 날짜',
+        label='날짜',
     )
     # 시간 선택 범위 설정
     HOUR_CHOICES = [(str(hour), str(hour)) for hour in range(24)]
     
     hour = forms.ChoiceField(choices=HOUR_CHOICES, label='시간')
 
+    image = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={'accept':'image/*'}),
+    )
+    
     def clean(self):
         cleaned_data = super().clean()
         post_time = cleaned_data.get('post_time')
