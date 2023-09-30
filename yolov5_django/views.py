@@ -118,6 +118,7 @@ def edit_post(request, post_id):
             return redirect('yolov5_django:my_page')
     else:
         form = EditPostForm(instance=post)
+        logger.error("%s", form.errors)
 
     context = {
         'form': form, 
@@ -153,9 +154,9 @@ def detail_post(request, post_id):
 
         'food_idx_list': post.detection_result,
         'food_name_list': food_name_list,
+        'nutrition_info_list':nutrition_info_list,
         'total_chart_info_json': total_chart_info_json,
         'each_chart_info_json':each_chart_info_json,
-        'nutrition_info_list':nutrition_info_list,
         'percentage': percentage,
     }
     
