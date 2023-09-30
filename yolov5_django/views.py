@@ -1,14 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils.timezone import now
 from django.core.paginator import Paginator
-from django.db.models import F
-
+import logging
+from django.db.models.functions import ExtractWeek
 from uuid import uuid4 # 고유번호 생성
-from datetime import datetime, timedelta
+from datetime import timedelta
 import os
 # ▲ 기본 라이브러리만
 
@@ -18,6 +17,7 @@ from .yolo_detect import y_detect
 from .foodinfo import food_info
 from .models import Post
 from accounts.personal_nutrition import save_personal_food_nutrition
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def index(request):
@@ -52,8 +52,13 @@ def upload_post(request):
             save_personal_food_nutrition(request.user, post, detected_foods)  # 개인 영양정보 저장
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
+        if not form.is_valid():
+            print(form.errors)
+            print(form['title'].errors)
     else:
         form = PostForm()
+        logger.error("%s", form.errors)
+        
     
     context = {'form': form}
     return render(request, 'yolov5_django/upload_post.html', context)
@@ -63,8 +68,12 @@ def upload_post(request):
 def my_page(request):
     form = DateRangeFilterForm(request.GET)
     
-    all_posts = Post.objects.filter(user=request.user).order_by('-post_time')
-    posts = all_posts
+    posts = Post.objects.filter(user=request.user).order_by('-post_time')
+
+    postw = Post.objects.annotate(week=ExtractWeek('post_time')).order_by('week')
+    total_posts = Post.objects.filter(user=request.user).count()
+
+    filter_O = False
 
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
@@ -72,20 +81,28 @@ def my_page(request):
 
         if start_date:
             posts = posts.filter(post_time__gte=start_date)
+            filter_O = True
 
         if end_date:
             end_date += timedelta(days=1)
             end_date -= timedelta(seconds=1)
             posts = posts.filter(post_time__lte=end_date)
+            filter_O = True
 
-    # Pagination
-    paginator = Paginator(posts, 20)
+    filtered_posts = posts.count()
+
+    # 페이지 설정
+    paginator = Paginator(posts, 8)
     page_number = request.GET.get('page')
     posts = paginator.get_page(page_number)
 
     context = {
         'posts': posts,
         'form': form,
+        'postw': postw,
+        'filter_O': filter_O,
+        'total_posts_count': total_posts,
+        'filtered_posts_count' : filtered_posts,
     }
     return render(request, 'yolov5_django/my_page.html', context)
 
@@ -94,16 +111,14 @@ def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, user=request.user)
 
     if request.method == 'POST':
-        # 이미지 수정 로직을 추가 (예: 폼 처리)
         form = EditPostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
-            # 새로운 제목과 이미지 파일을 업데이트
             form.save()
 
-            # 수정이 완료되면 이미지 목록 페이지로 리디렉션
             return redirect('yolov5_django:my_page')
     else:
         form = EditPostForm(instance=post)
+
     context = {
         'form': form, 
         'post': post,

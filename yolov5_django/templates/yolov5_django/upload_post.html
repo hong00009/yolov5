@@ -1,36 +1,52 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-
-<h1>음식 사진을 업로드 하세요</h1>
-<form method="post" enctype="multipart/form-data" onsubmit="showLoading()" class="row g-3">
-    {% csrf_token %}
-    <div class="col-md-3">
-        <label for="{{ form.title.id }}" class="form-label">제목:</label>
-        {{ form.title }}
-    </div>
-    <div class="col-md-9">
-        <label for="{{ form.text_content.id }}" class="form-label">식사 내용 메모:</label>
-        {{ form.text_content }}
-    </div>
-    <div class="col-md-3">
-        <label for="{{ form.post_time.id }}" class="form-label">식사 날짜:</label>
-        {{ form.post_time }}
-    </div>
-    <div class="col-md-3">
-        <label for="{{ form.hour.id }}" class="form-label">식사 시간:</label>
-        {{ form.hour }}
-    </div>
-    
-    <div class="col-12">
-        <label for="{{ form.image.id }}" class="form-label">이미지:</label>
-        {{ form.image }}
-    </div>
-
-    <div class="col-md-3">
-        <button type="submit" class="btn btn-primary">작성하기</button>
-    </div>
-</form>
+<div class="container mt-5">
+    <h4 class="mb-3">식단 일지 작성</h4>
+        <form method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" class="form-control" id="titleInput" name="title" required>
+            </div>
+            <div class="mb-3">
+                <textarea class="form-control" id="textInput" rows="6" name="text_content" required></textarea>
+                <div id="textHelp" class="form-text">나만의 식단 일지를 작성해보세요</div>
+            </div>
+            <div class="mb-3">
+                <input type="date" id="date" name="post_time" required>
+                <select class="js-example-basic-single" name="hour" required>
+                    <option value="0">00</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    </select>시
+            </div>
+            <div class="mb-3">
+                <input class="form-control form-control-sm" id="formFile" type="file" name="image" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary">작성</button>
+        </form>
+</div>
 
 
 

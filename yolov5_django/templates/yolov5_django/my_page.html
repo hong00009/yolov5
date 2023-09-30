@@ -1,109 +1,99 @@
 {% extends 'base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
+
 <br>
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <form method="GET">
-                <div class="row">
-                    <div class="col">
-                            <label for="{{ form.start_date.id }}">시작 날짜</label>
-                            {{ form.start_date }}
-                    </div>
-                    <div class="col">
-                            <label for="{{ form.end_date.id }}">마지막 날짜</label>
-                            {{ form.end_date }}
-                    </div>
-                </div>    
-                <div class="row">    
-                    <div class="col">
-                        <button type="submit" class="btn btn-success">기간검색</button>
-                        <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-secondary">검색 해제</a>
-                    </div>
-                </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{% url 'yolov5_django:upload_post' %}" class="btn btn-warning"><i class="fa-solid fa-camera"></i></a>
+            
+            <form method="GET" class="d-inline-flex align-items-center">
+
+                {{ form.start_date }} &nbsp;~&nbsp;{{ form.end_date }}
+                <button type="submit" class="btn btn-light"><i class="fa-regular fa-calendar-check"></i></button>
+                <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-light"><i class="fa-regular fa-calendar-xmark"></i></a>
             </form>
+                        <a href="{% url 'accounts:profile' %}" class="btn btn-light"><i class="fa-solid fa-user-gear"></i></a>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-auto">
-            <a href="{% url 'yolov5_django:upload_post' %}" class="btn btn-primary">새 게시물 작성</a>
-        </div>
-        <div class="col-md-auto">
-            <a href="{% url 'accounts:profile' %}" class="btn btn-info">프로필 페이지</a>
-        </div>
-    </div>  
+<div class="text-center mt-3">
+    {% if total_posts_count > 0 %}
+        <p>{{ user }}님의 식단일지</p>
+    {% else %}
+        <p> 식단일지를 등록해주세요.</p>
+    {% endif %}
 </div>
 
+
+
 <br>
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 row-cols-xl-4 g-4">
     {% for post in posts %}
     <div class="col">
-        <div class="card">
+        <div class="card position-relative">
             <a href="{% url 'yolov5_django:detail_post' post.id %}">
                 <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
             </a>
+
+            <div class="position-absolute top-0 end-0 p-2 d-flex gap-2">
+                <a href="#" 
+                class="btn btn-light delete-button opacity-half hover-opacity-full" 
+                data-post-id="{{ post.id }}" 
+                data-delete-url="{% url 'yolov5_django:delete_post' post.id %}" 
+                style="--bs-btn-padding-y: .05rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .50rem;">
+                <i class="fa-solid fa-xmark"></i>
+                </a>
+            </div>
+
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
                 <p>{{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.hour }}시</p>
             </div>
-            <div class="card-body">
-                <a href="{% url 'yolov5_django:edit_post' post.id %}" class="btn btn-warning">수정</a>
-                <a href="#" class="btn btn-danger delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}">삭제</a>
-            </div>
+
         </div>
     </div>
     {% endfor %}
-</div>
-<footer>
-    <p>
-        <!-- Pagination links -->
-        <div class="pagination" style="text-align: center;">
-            <span class="step-links">
-                {% if posts.has_previous %}
-                <a href="?page=1">&laquo; 처음</a>
-                <a href="?page={{ posts.previous_page_number }}">이전</a>
-                {% endif %}
+</div>  
 
-                {% with next_pages=posts.number|add:2 %}
-                {% if posts.paginator.num_pages > next_pages %}
-                    <span>...</span>
-                {% endif %}
-                {% endwith %}
 
-                {% for i in posts.paginator.page_range %}
-                {% if posts.number == i %}
-                    <span class="current-page">{{ i }}</span>
-                {% elif i > posts.number|add:-2 and i < posts.number|add:3 %}
-                    <a href="?page={{ i }}">{{ i }}</a>
-                {% endif %}
-                {% endfor %}
+<nav aria-label="Page navigation" class="mt-5">
+    <ul class="pagination justify-content-center">
+        {% if posts.has_previous %}
+        <li class="page-item">
+        <a class="page-link" href="?page={{ posts.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+        {% endif %}
 
-                {% if posts.paginator.num_pages > next_pages %}
-                <span>...</span>
-                {% endif %}
+        {% if posts.paginator.num_pages > 1 %}
+            {% for i in posts.paginator.page_range %}
+            {% if posts.number == i %}
+            <li class="page-item disabled">
+                <a class="page-link">{{ i }}</a>
+            </li>
+            {% elif i > posts.number|add:-2 and i < posts.number|add:3 %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+            {% endfor %}
 
-                {% if posts.has_next %}
-                <a href="?page={{ posts.next_page_number }}">다음</a>
-                <a href="?page={{ posts.paginator.num_pages }}">마지막 &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
-    </p>
-</footer>
+        {% if posts.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+      {% endif %}
+    </ul>
+  </nav>
+
+
+
 {% endif %}      
-
-<!-- Modal pop-up -->
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <p>게시글을 삭제하시겠습니까?</p>
-        <button id="confirmDelete" class="delete-button-yes">삭제</button>
-        <button id="cancelDelete" class="delete-button-no">취소</button>
-    </div>
-</div>
 
 <style>
     #deleteModal {
@@ -113,11 +103,11 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.3);
         z-index: 999; 
         text-align: center;
     }
-
+  
     .modal-content {
         background-color: white;
         padding: 20px;
@@ -127,27 +117,46 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        max-width: 300px;
+        max-width: 200px;
     }
-
-    .delete-button-yes {
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
+  
+    .delete-button-yes,
     .delete-button-no {
-        background-color: gray;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
+        color:white;
+        border:none;
+        width:auto;
+        padding-left:15px;
+        padding-right:15px;
+        border-radius:5 px;
+        cursor:pointer;
+    }
+   
+   .delete-button-yes{
+         background-color:gray;
+     }
+     
+   .delete-button-no{
+         background-color:darkgray;
+     }
+     
+    .opacity-half {
+        opacity: 0.3;
+    }
+    
+    .hover-opacity-full:hover {
+        opacity: 1;
     }
 </style>
+
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="button-container">
+        <p>삭제하시겠습니까?</p>
+        <button id="confirmDelete" class="delete-button-yes">삭제</button>
+        <button id="cancelDelete" class="delete-button-no">취소</button>
+        </div>
+    </div>
+</div>
 
 <script>
     
@@ -206,6 +215,5 @@
         deleteModal.style.display = "none";
     }
 </script>
-
 
 {% endblock %}
