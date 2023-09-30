@@ -1,3 +1,6 @@
+## NutritionDB.csv 파일을 DB에 일괄 입력하는 파일입니다
+# 사용방법 : 커널에서 python load_csv.py 입력. 끝.
+
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "final_project.settings")
 import django

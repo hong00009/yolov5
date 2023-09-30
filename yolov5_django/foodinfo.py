@@ -1,12 +1,7 @@
 # 음식 사진 속 객체탐지 결과 출력을 위한 함수
 # 음식 이름, 음식 탄단지 정보(차트용) 반환
 # food_name_list, chart_info_json 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-
-from accounts.models import UserFoodNutritions
-from .models import Post, FoodNutrition
+from .models import FoodNutrition
 from .chart import chart
 
 def food_info(post):

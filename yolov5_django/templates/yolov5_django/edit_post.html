@@ -1,10 +1,77 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>게시글 수정</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">저장</button>
-  </form>
-  <a href="{% url 'yolov5_django:my_page' %}">취소</a>
+{% load static %}
+
+<div class="row mt-5">
+  <div class="col-6">
+    <h4 class="mb-3">식단 일지 수정</h4>
+        <form method="POST" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" class="form-control" id="titleInput" name="title" value="{{ post.title }}" required>
+            </div>
+
+            <div>
+            {% if post.image %}
+              <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; max-height:640px;">
+            {% endif %}
+            </div>
+            <div class="mb-3 mt-3">
+                <textarea class="form-control" id="textInput" rows="6" name="text_content" required>{{ post.text_content }}</textarea>
+                <div id="textHelp" class="form-text">나만의 식단 일지를 작성해보세요</div>
+            </div>
+            <div class="mb-3">
+                <input type="date" id="date" name="post_time" value="{{post.post_time.date|date:'Y-m-d'}}" required>
+                <select class="js-example-basic-single" name="hour" required>
+                    <option value="0">00</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    </select>시
+            </div>
+            <button type="submit" class="btn btn-primary">수정</button>
+        </form>
+      </div>
+
+      <div class="col-6">
+      <h3>음식정보수정</h3>
+      <p>aaa여기에서 사용자가 음식을 변경할 수 있게 만들 예정임</p>
+    </div>
+
+  </div>
+
+
+
+
+<div id="testTree"></div>
+
+<!-- 
+<script>
+$('#testTree').jstree({
+	'core' : { "check_callback" :  true },
+	'data' : treeList,
+	'plugins' : ["dnd","contextmenu"]
+})
+</script> -->
+
 {% endblock %}

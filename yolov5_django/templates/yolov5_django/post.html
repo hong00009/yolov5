@@ -11,8 +11,10 @@
       <p>{{ post.text_content }}</p>
       
        
-      <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-light"><i class="fa-regular fa-images"></i></a>
-      <a href="#" class="btn btn-light delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}"><i class="fa-regular fa-trash-can"></i></a>
+      <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-light" aria-label="my_page"><i class="fa-regular fa-images"></i></a>
+      <a href="{% url 'yolov5_django:edit_post' post.id %}" class="btn btn-light" aria-label="edit_post"><i class="fa-regular fa-pen-to-square"></i></a>
+      <a href="#" class="btn btn-light delete-button" data-post-id="{{ post.id }}" data-delete-url="{% url 'yolov5_django:delete_post' post.id %}" aria-label="delete_post"><i class="fa-regular fa-trash-can"></i></a>
+    
     </div>
 
     <!-- md 이상에서는 6칸(가로배치), sm에서는 12칸(세로배치) -->
