@@ -78,6 +78,7 @@ def profile(request):
         form = UserProfileForm(instance=profile)
 
     context = {
+        'user': user,
         'form': form,
         'bmi': bmi,
         'standard_weight': standard_weight, 

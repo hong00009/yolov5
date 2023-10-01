@@ -5,57 +5,79 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h3>나의 신체 정보</h3>
-
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="option1">
-                <label class="form-check-label" for="inlineRadio1">남성</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" id="inlineRadio2" value="option2">
-                <label class="form-check-label" for="inlineRadio2">여성</label>
-              </div>
-            <div>
-              <input type="date" id="date" name="birthdate" required>
-            </div>
-            <div class="input-group">
-                <span class="input-group-text">키 / 몸무게</span>
-                <input type="text" class="form-control" name="height">
-                <input type="text" class="form-control" name="weight">
-              </div>
-
-            <form method="POST" id="profile-form">
+            <div class="bg-light p-3">
+                <h3>나의 신체 정보</h3>
+                <form method="POST" id="profile-form">
                 {% csrf_token %}
-    
-                {{ form.as_p }}
-                <button type="submit" id="save-button">저장</button>
-            </form>
+
+                <div class="form-check form-check-inline"> 
+                    <input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="남성"{% if form.gender.value == "남성"%}checked{% endif %}> 
+                    <label class="form-check-label" for="{{ inlineRadio1 }}">남성</label> 
+                </div> 
+
+                <div class="form-check form-check-inline"> 
+                    <input class="form-check-input" type="radio" name="gender" id="{{ inlineRadio2 }}" value="여성"{% if form.gender.value == "여성"%}checked{% endif %}> 
+                    <label class="form-check-label" for="{{ inlineRadio2 }}">여성</label> 
+                </div>
+                
+                <div>
+                    {{ form.birthdate.errors }}
+                    <label for="{{ form.birthdate.id_for_label }}">생년월일:</label>
+                    <input type="date" id="{{ form.birthdate.id_for_label }}" name="{{ form.birthdate.html_name }}" class="form-control" style="width: 150px;" required>
+                </div>
+
+                <div>
+                    {{ form.height.errors }}
+                    <label for="{{ form.height.id_for_label }}">키(cm):</label>
+                    <input type="number" id="{{ form.height.id_for_label }}" name="{{ form.height.html_name }}" value="{{ form.height.html_name }}" class="form-control" style="width: 150px;" required>
+                </div>
+
+                <div>
+                    {{  form.weight.errors  }}
+                    <label for="{{  form.weight.id_for_label  }}">몸무게(kg):</label>
+                    <input type="number" id="{{  form.weight.id_for_label }}" name="{{  form.weight.html_name }}" class="form-control" style="width: 150px;" required> 
+               </div>
+
+                <button type="submit" class="btn btn-primary" id="save-button">저장</button>
+                </form>
+            </div>
         </div>
         {% if bmi %}
-        <div class="col-md-6">
-            <h3>연령에 따른 표준 섭취 열량과 BMI</h3>
-            <p>{{ ages }}대 표준 섭취 열량: 일일 {{ daily_kcal|intcomma }}kcal</p>
-            <p id="bmi">BMI: {{ bmi }} [            
-                {% if bmi < 18.5 %}
-                    저체중 ] 
-                {% elif bmi < 23 %}
-                    정상 ]
-                {% elif bmi < 25 %}
-                    과체중 ]
-                {% elif bmi < 30 %}
-                    1단계 비만 ]
-                {% elif bmi < 35 %}
-                    2단계 비만 ]
-                {% else %}
-                    고도 비만 ]
-                {% endif %}
-                </p>
-            <p>참고: 제공되는 정보들은 기본적인 지침일 뿐이며 개개인의 상황에 따라 달라질 수 있습니다. 전문적인 의학 조언을 얻으려면 의료 전문가와 상담하세요.</p>
-            
-            <div>
-              <br><br>
-              <p>이곳에 일간/주간/월간 영양통계 텍스트로 나타내면 좋을듯</p>
+        <div class="col-md-6 ">
+            <div class="bg-light p-3">
+                <h3>연령에 따른 표준 섭취 열량과 BMI</h3>
+                <p>{{ ages }}대 표준 섭취 열량: 일일 {{ daily_kcal|intcomma }}kcal</p>
+                <p id="bmi">BMI: {{ bmi }} [            
+                    {% if bmi < 18.5 %}
+                        저체중 ] &nbsp 체중관리가 필요합니다
+                    {% elif bmi < 23 %}
+                        정상 ]
+                    {% elif bmi < 25 %}
+                        과체중 ] &nbsp 체중관리가 필요합니다
+                    {% elif bmi < 30 %}
+                        1단계 비만 ] &nbsp 체중관리가 필요합니다
+                    {% elif bmi < 35 %}
+                        2단계 비만 ] &nbsp 체중관리가 필요합니다
+                    {% else %}
+                        고도 비만 ] &nbsp 체중관리가 필요합니다
+                    {% endif %}
+                    </p>
+                <p>참고: 제공되는 정보들은 기본적인 지침일 뿐이며 개개인의 상황에 따라 달라질 수 있습니다. 전문적인 의학 조언을 얻으려면 의료 전문가와 상담하세요.</p>
             </div>
+
+
+
+            <div class="bg-secondary p-3">
+
+                <br><br>
+                <p>이곳에 일간/주간/월간 영양통계 텍스트로 나타내면 좋을듯</p>
+                <p>사용자가 선택하는 버튼</p>
+                <br>
+
+
+            </div>
+
+
         </div>
         {% endif %}
     </div>
