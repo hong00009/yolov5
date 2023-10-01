@@ -25,28 +25,19 @@
                 {{ form.hour }}시
             </div>
           </div>
-          
+          {% if post.detection_result is not None %}
           <div class="col-6">
             <h3>음식 수정</h3>
             <p>{{ nutrition_edit_form.as_p }}</p>
             <p>{{ form.delete }}</p>
           </div>
+          {% endif %}
           
-          <div class="col-12 text-center mt-3">
+          <div class="col-12 text-left mt-3">
           <button type="submit" class="btn btn-primary">수정</button>
           </div>
       </form>
     </div>
 </div>
-
-
-<!-- 
-<script>
-$('#testTree').jstree({
-	'core' : { "check_callback" :  true },
-	'data' : treeList,
-	'plugins' : ["dnd","contextmenu"]
-})
-</script> -->
 
 {% endblock %}
