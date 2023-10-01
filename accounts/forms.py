@@ -28,6 +28,7 @@ class UserProfileForm(forms.ModelForm):
     
     gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect(attrs={'class': 'inline-radio'}))
     gender.label = '성별'
+    
     class Meta:
         model = UserProfile
         fields = ['gender', 'birthdate', 'height', 'weight']

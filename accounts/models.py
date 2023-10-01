@@ -10,12 +10,17 @@ class User(AbstractUser):
     pass
 
 class UserProfile(models.Model):
+    GENDER_CHOICES = (
+        ('male', '남성'),
+        ('female', '여성'),
+    )
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
-    gender = models.CharField(max_length=10)  # 성별 (남성, 여성, 기타 등)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     birthdate = models.DateField()  # 생년월일
-    height = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(300.0)])  # 키 (예: 175.5 cm)
-    weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(300.0)])  # 현재 몸무게 (예: 70.5 kg)
+    height = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(300.0)])
+    weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(350.0)])
     
     @property
     def age(self):
