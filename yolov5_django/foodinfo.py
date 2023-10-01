@@ -2,6 +2,7 @@
 # 음식 이름, 음식 탄단지 정보(차트용) 반환
 # food_name_list, chart_info_json 
 from .models import FoodNutrition, Post
+from accounts.models import UserFoodNutritions
 from .chart import chart
 
 def food_info(post):
@@ -9,12 +10,12 @@ def food_info(post):
         #검출된 객체가 없으면
         print('**food_info함수 : 객체검출X')
         return 0, 0, 0, 0, 0
-    
-    # 검출결과 문자열에서 음식의 class idx (int형) 개별 추출하여 리스트에 저장
-    class_idx_list = [int(class_idx) for class_idx in post.detection_result.split(',')]
-    
-    nutrition_info_list = FoodNutrition.objects.filter(class_index__in=class_idx_list)
-    # 음식 class idx리스트마다의 영양정보 가져와 모든 음식의 영양정보DB 리스트로 저장
+
+    # 해당 post와 연결되어 저장된 UserFoodNutritions 모두 찾아오기
+    user_food_nutritions_list = UserFoodNutritions.objects.filter(user=post.user_id, post=post.id)
+
+    # 영양정보 추출하여 리스트로 저장
+    nutrition_info_list = [each_item.nutrition_info for each_item in user_food_nutritions_list]
 
     food_name_list = [each_food.food_name for each_food in nutrition_info_list]
     # 모든 음식 이름 추출하여 리스트로 저장

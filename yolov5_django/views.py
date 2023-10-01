@@ -120,13 +120,12 @@ def edit_post(request, post_id):
         if post_form.is_valid() : 
             post_form.save()
 
-            if formset.is_valid():
-                instances = formset.save(commit=False)
-
-                for instance in instances:
-                    if instance.delete: # 삭제
-                        instance.delete()
+            if formset.is_valid():    
+                for form in formset:
+                    if form.cleaned_data['delete']:
+                        form.instance.delete()
                     else:
+                        instance = form.save(commit=False)
                         instance.user = request.user
                         instance.post = post
                         instance.save()
@@ -138,8 +137,6 @@ def edit_post(request, post_id):
 
         query_set = UserFoodNutritions.objects.filter(post=post, user=request.user)
         formset = Formset(queryset=query_set)
-
-        logger.error("%s", formset.errors)
 
     food_name_list, nutrition_info_list, _, _, _ = food_info(post)
 
