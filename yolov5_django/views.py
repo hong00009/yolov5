@@ -9,6 +9,7 @@ from uuid import uuid4 # 고유번호 생성
 from datetime import timedelta
 import os
 from django.forms import modelformset_factory
+from urllib.parse import urlencode
 # ▲ 기본 라이브러리만
 
 # ▼ 자체 제작
@@ -98,6 +99,11 @@ def my_page(request):
     page_number = request.GET.get('page')
     posts = paginator.get_page(page_number)
 
+    # 필터적용이후 페이지 넘길때 예외처리
+
+    current_params = request.GET.copy()
+    base_url = f"/my_page/?{urlencode(current_params)}"
+
     context = {
         'posts': posts,
         'form': form,
@@ -105,6 +111,7 @@ def my_page(request):
         'filter_O': filter_O,
         'total_posts_count': total_posts,
         'filtered_posts_count' : filtered_posts,
+        'base_url':base_url,
     }
     return render(request, 'yolov5_django/my_page.html', context)
 
