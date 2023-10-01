@@ -115,7 +115,7 @@ def edit_post(request, post_id):
         if form.is_valid():
             form.save()
 
-            return redirect('yolov5_django:my_page')
+            return redirect('yolov5_django:detail_post', post_id=post.id)
     else:
         form = EditPostForm(instance=post)
         logger.error("%s", form.errors)
@@ -123,6 +123,7 @@ def edit_post(request, post_id):
     context = {
         'form': form, 
         'post': post,
+        'hours':range(24),
     }
     return render(request, 'yolov5_django/edit_post.html', context)
 
