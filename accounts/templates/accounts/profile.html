@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load humanize %}
+{% load tz %}
+{% now "Y-m-d" as today %}
 
 <div class="container">
     <div class="row">
@@ -23,7 +25,7 @@
                 <div>
                     {{ form.birthdate.errors }}
                     <label for="birthdate">생년월일:</label>
-                    <input type='date' id="birthdate" name="birthdate" value="{% if profile and profile.birthdate %}{{ profile.birthdate|date:'Y-m-d' }}{% endif %}" class='form-control' style='width: 150px;' required>
+                    <input type='date' id="birthdate" name="birthdate" value="{% if profile and profile.birthdate %}{{ profile.birthdate|date:'Y-m-d' }}{% endif %}" max="{{ today }}" class='form-control' style='width: 150px;' required>
                 </div>
 
                 <div>
