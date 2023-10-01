@@ -22,11 +22,7 @@
             </div>
             <div class="mb-3">
                 <input type="date" id="date" name="post_time" value="{{post.post_time.date|date:'Y-m-d'}}" required>
-                <select class="js-example-basic-single" name="hour" required>
-                  {% for hour in hours %}
-                    <option value="{{ hour }}" {% if post.post_time.hour == hour %}selected{% endif %}>{{ hour }}</option>
-                  {% endfor %}
-                </select>시
+                {{ form.hour }}시
             </div>
             <button type="submit" class="btn btn-primary">수정</button>
         </form>

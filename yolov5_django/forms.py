@@ -55,7 +55,9 @@ class EditPostForm(forms.ModelForm):
     title = forms.CharField(required=True)
     text_content = forms.CharField(required=True)
     post_time = forms.DateTimeField(required=True)
-    hour = forms.IntegerField(required=True)
+
+    HOUR_CHOICES = [(str(hour), str(hour)) for hour in range(24)]
+    hour = forms.ChoiceField(choices=HOUR_CHOICES)
 
 
 

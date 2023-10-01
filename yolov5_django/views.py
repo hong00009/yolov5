@@ -123,7 +123,7 @@ def edit_post(request, post_id):
     context = {
         'form': form, 
         'post': post,
-        'hours':range(24),
+        'hours': [str(hour) for hour in range(24)],
     }
     return render(request, 'yolov5_django/edit_post.html', context)
 
