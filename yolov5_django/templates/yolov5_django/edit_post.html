@@ -5,7 +5,7 @@
 <div class="row mt-5">
   <div class="col-6">
     <h4 class="mb-3">식단 일지 수정</h4>
-        <form method="POST" enctype="multipart/form-data" >
+      <form method="POST" enctype="multipart/form-data" >
             {% csrf_token %}
             <div class="mb-3">
                 <input type="text" class="form-control" id="titleInput" name="title" value="{{ post.title }}" required>
@@ -24,21 +24,24 @@
                 <input type="date" id="date" name="post_time" value="{{post.post_time.date|date:'Y-m-d'}}" required>
                 {{ form.hour }}시
             </div>
-            <button type="submit" class="btn btn-primary">수정</button>
-        </form>
-      </div>
-
-      <div class="col-6">
-      <h3>음식정보수정</h3>
-      <p>aaa여기에서 사용자가 음식을 변경할 수 있게 만들 예정임</p>
+          </div>
+          
+          <div class="col-6">
+            <h3>음식정보수정</h3>
+            <p>aaa여기에서 사용자가 음식을 변경할 수 있게 만들 예정임</p>
+            <p>post.detection_result : {{ post.detection_result }}</p>
+            <p>{{food_name_list}}</p>   
+            <p>{{ nutrition_edit_form.as_p }}</p>
+            <p>{{ form.delete }}</p>
+          </div>
+          
+          <div class="col-12 text-center mt-3">
+          <button type="submit" class="btn btn-primary">수정</button>
+          </div>
+      </form>
     </div>
+</div>
 
-  </div>
-
-
-
-
-<div id="testTree"></div>
 
 <!-- 
 <script>

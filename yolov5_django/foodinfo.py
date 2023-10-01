@@ -1,13 +1,13 @@
 # 음식 사진 속 객체탐지 결과 출력을 위한 함수
 # 음식 이름, 음식 탄단지 정보(차트용) 반환
 # food_name_list, chart_info_json 
-from .models import FoodNutrition
+from .models import FoodNutrition, Post
 from .chart import chart
 
 def food_info(post):
     if post.detection_result is None:
         #검출된 객체가 없으면
-        print('**객체검출X')
+        print('**food_info함수 : 객체검출X')
         return 0, 0, 0, 0, 0
     
     # 검출결과 문자열에서 음식의 class idx (int형) 개별 추출하여 리스트에 저장

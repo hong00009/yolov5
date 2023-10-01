@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from django.contrib.auth import get_user_model
 from django import forms
 
-from .models import UserProfile
+from .models import UserProfile, UserFoodNutritions
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta): # UCF 상속, model만 내것으로수정하고 나머지 그대로
@@ -42,3 +42,11 @@ class UserProfileForm(forms.ModelForm):
             'birthdate': forms.DateInput(attrs={'type': 'date', 
                                                 'value': '2000-01-01'}),
         }
+
+class UserNutritionsEditForm(forms.ModelForm):
+    
+    delete = forms.BooleanField(required=False, label='삭제')
+
+    class Meta:
+        model = UserFoodNutritions
+        fields = ['nutrition_info', 'delete']

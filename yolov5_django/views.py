@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views.decorators.http import require_POST
-from django.utils.timezone import now
 from django.core.paginator import Paginator
 import logging
 from django.db.models.functions import ExtractWeek
 from uuid import uuid4 # 고유번호 생성
 from datetime import timedelta
 import os
+from django.forms import modelformset_factory
 # ▲ 기본 라이브러리만
 
 # ▼ 자체 제작
@@ -17,6 +17,8 @@ from .yolo_detect import y_detect
 from .foodinfo import food_info
 from .models import Post
 from accounts.personal_nutrition import save_personal_food_nutrition
+from accounts.forms import UserNutritionsEditForm
+from accounts.models import UserFoodNutritions
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -109,21 +111,45 @@ def my_page(request):
 @login_required
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, user=request.user)
+    Formset = modelformset_factory(UserFoodNutritions, form=UserNutritionsEditForm, extra=0)
 
     if request.method == 'POST':
-        form = EditPostForm(request.POST, request.FILES, instance=post)
-        if form.is_valid():
-            form.save()
+        post_form = EditPostForm(request.POST, request.FILES, instance=post)
+        formset = Formset(request.POST)
+
+        if post_form.is_valid() : 
+            post_form.save()
+
+            if formset.is_valid():
+                instances = formset.save(commit=False)
+
+                for instance in instances:
+                    if instance.delete: # 삭제
+                        instance.delete()
+                    else:
+                        instance.user = request.user
+                        instance.post = post
+                        instance.save()
+
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
     else:
-        form = EditPostForm(instance=post)
-        logger.error("%s", form.errors)
+        post_form = EditPostForm(instance=post)
+
+        query_set = UserFoodNutritions.objects.filter(post=post, user=request.user)
+        formset = Formset(queryset=query_set)
+
+        logger.error("%s", formset.errors)
+
+    food_name_list, nutrition_info_list, _, _, _ = food_info(post)
 
     context = {
-        'form': form, 
+        'form': post_form,
+        'nutrition_edit_form': formset, 
         'post': post,
         'hours': [str(hour) for hour in range(24)],
+        'food_name_list':food_name_list,
+        'nutrition_info_list':nutrition_info_list,
     }
     return render(request, 'yolov5_django/edit_post.html', context)
 
