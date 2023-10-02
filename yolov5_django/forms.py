@@ -50,10 +50,15 @@ class PostForm(forms.ModelForm):
 class EditPostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'image']
+        fields = ['title', 'text_content', 'post_time', 'hour']
 
-    title = forms.CharField(required=True)  # 선택적으로 제목 수정 가능하도록
-    image = forms.ImageField(required=True)  # 선택적으로 이미지 수정 가능하도록
+    title = forms.CharField(required=True)
+    text_content = forms.CharField(required=True)
+    post_time = forms.DateTimeField(required=True)
+
+    HOUR_CHOICES = [(str(hour), str(hour)) for hour in range(24)]
+    hour = forms.ChoiceField(choices=HOUR_CHOICES)
+
 
 
 class DateRangeFilterForm(forms.Form):

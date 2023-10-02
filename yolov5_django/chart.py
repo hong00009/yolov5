@@ -28,19 +28,21 @@ def chart(nutrition_info_list):
             'protein': protein,
             'fat': fat,
          }
-    print('***total_nutrition_3:',total_nutrition_3)
-    print('***each_nutrition_3:',each_nutrition_3)
+
 
     # 탄단지 백분율 계산
     percentage_nutirition_3 = {}
     sum_nutrition_3 = sum(total_nutrition_3.values())
-    print('**sum_nutrition_3:',sum_nutrition_3)
 
-    for each_nutrition in total_nutrition_3:
-        percentage = (total_nutrition_3[each_nutrition] / sum_nutrition_3) * 100
-        percentage_nutirition_3[each_nutrition] = round(percentage)
+    if sum_nutrition_3 == 0:
+        # 영양소 합계가 0인 경우, 모든 비율을 0으로 설정하고 계산 생략
+        for each_nutrition in total_nutrition_3:
+            percentage_nutirition_3[each_nutrition] = 0
+    else:
+        for each_nutrition in total_nutrition_3:
+            percentage = (total_nutrition_3[each_nutrition] / sum_nutrition_3) * 100
+            percentage_nutirition_3[each_nutrition] = round(percentage)
 
-    print('***percentage_nutirition_3:',percentage_nutirition_3)
     
     # JSON 형식으로 변환
     total_chart_info_json = json.dumps(total_nutrition_3)

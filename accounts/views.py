@@ -58,9 +58,12 @@ def profile(request):
         profile = UserProfile.objects.get(user=user)
         bmi, standard_weight, daily_kcal, meal_kcal = bmi_calculator(user)  
         ages = profile.age//10*10
+        print('**try', profile)
+
     except UserProfile.DoesNotExist:
         # 프로필이 없으면 None으로 설정
         profile = bmi = standard_weight = daily_kcal = meal_kcal = ages = None
+        print('**프로필없음', profile)
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
@@ -68,6 +71,8 @@ def profile(request):
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = user
+            print('**POST 저장', profile)
+
             profile.save()
             
             # 데이터 저장 후 새롭게 BMI 계산
@@ -76,8 +81,12 @@ def profile(request):
 
     else:
         form = UserProfileForm(instance=profile)
+        print('**else GET')
+
 
     context = {
+        'user': user,
+        'profile': profile,
         'form': form,
         'bmi': bmi,
         'standard_weight': standard_weight, 

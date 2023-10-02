@@ -37,4 +37,4 @@ class FoodNutrition(models.Model):
     cholesterol = models.FloatField() # 콜레스테롤
 
     def __str__(self):
-        return f'{self.code} - {self.food_name}'
+        return f'{self.food_name}'

@@ -5,10 +5,13 @@
   <div class="row"> 
     <div class="col-md-6 col-sm-12 mb-md-4 mb-sm-4">
       
-      <h3 style="margin-top:20px;">{{ post.title }}</h3>
-      <p>{{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.hour }}시 식단</p>
-      <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; max-height:640px;" />
-      <p>{{ post.text_content }}</p>
+      <p class="display-6 font-weight-bold bg-light text-dark p-3" style="margin-top:20px;">{{ post.title }}</h3>
+      <p class="text-primary">{{ post.post_time|date:"Y" }}년 {{ post.post_time|date:"m" }}월 {{ post.post_time|date:"d" }}일 {{ post.hour }}시 식단</p>
+      <div class="bg-light p-3" style="max-width: 100%; height: auto;">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+      </div>
+    
+      <p class="bg-light text-dark p-3" style="margin-top: 20px;">{{ post.text_content }}</p>
       
        
       <a href="{% url 'yolov5_django:my_page' %}" class="btn btn-light" aria-label="my_page"><i class="fa-regular fa-images"></i></a>

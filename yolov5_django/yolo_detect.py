@@ -20,7 +20,7 @@ def y_detect(img_path):
 
     detections = results.xyxy[0] 
     # detections[:,5] => tensor([ 1.,  50., 127.])
-    detected_list = detections[:, 5].int().tolist() # [1, 50, 127]
+    detected_list = list(set(detections[:, 5].int().tolist())) # [1, 50, 127]
 
     if not detected_list: # 검출객체없음
         return None # None 반환
