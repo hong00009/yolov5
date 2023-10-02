@@ -13,10 +13,10 @@ def y_detect(img_path):
 
     # 최소640, 최대 1600까지만 (이 이상은 너무 오래걸림)
     size = max(min(size, 1600), 640)
-    print('**객체검출 size:',size)
+    print('**객체검출 size:',0)
 
     model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolov5_model/yolov5L_best.pt')
-    results = model(img_path, size=1600)
+    results = model(img_path, size=1056)
 
     detections = results.xyxy[0] 
     # detections[:,5] => tensor([ 1.,  50., 127.])

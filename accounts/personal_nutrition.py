@@ -1,12 +1,12 @@
 # 게시물에서 검출된 음식객체 수만큼 UserFoodNutritions 영양정보를 DB에 저장하는 함수
 # BMI등 건강관련 수치 계산 함수
 from datetime import timedelta
-from django.db.models import Sum, Avg
+from django.db.models import Sum, Avg, Count
 import calendar
 from django.utils import timezone
 
 from .models import UserFoodNutritions
-from yolov5_django.models import FoodNutrition
+from yolov5_django.models import FoodNutrition, Post
 from yolov5_django.forms import DateRangeFilterForm
 from .models import UserFoodNutritions
 
@@ -45,13 +45,14 @@ def bmi_calculator(user):
     bmi = round(weight / (height * height), 1)
 
     age = user.userprofile.age
+    print(age)
 
     daily_kcal = 0
     meal_kcal = 0
 
     # 연령별 권장 섭취 칼로리 계산
     if age < 30: 
-        if gender == '':
+        if gender == 'male':
             daily_kcal = 2600
             meal_kcal = 870
         elif gender == 'female':
@@ -124,62 +125,69 @@ def bmi_calculator(user):
 
 def stats(user):
     today = timezone.now().date()
-
-    # 오늘 기준으로 통계량 계산
-    daily_nutrition = UserFoodNutritions.objects.filter(user=user, datetime__date=today).aggregate(
-        total_energy=Sum('nutrition_info__energy'),
-        total_carbohydrate=Sum('nutrition_info__carbohydrate'),
-        total_protein=Sum('nutrition_info__protein'),
-        total_fat=Sum('nutrition_info__fat'),
-    )
-
-    start_of_week = today - timedelta(days=today.weekday())
-    end_of_week = start_of_week + timedelta(days=6)
     
-    # 이번 주의 모든 메뉴 합계(AVG를 구하기 위해)
-    weekly_nutrition = UserFoodNutritions.objects.filter(
-        user=user, datetime__date__range=[start_of_week, end_of_week]
-    ).aggregate(
-        total_energy=Sum('nutrition_info__energy'),
-        total_carbohydrate=Sum('nutrition_info__carbohydrate'),
-        total_protein=Sum('nutrition_info__protein'),
-        total_fat=Sum('nutrition_info__fat'),
-    )
+    try:
+        # 오늘 기준으로 통계량 계산
+        daily_nutrition = UserFoodNutritions.objects.filter(user=user, datetime__date=today).aggregate(
+            total_energy=Sum('nutrition_info__energy'),
+            total_carbohydrate=Sum('nutrition_info__carbohydrate'),
+            total_protein=Sum('nutrition_info__protein'),
+            total_fat=Sum('nutrition_info__fat'),
+        )
 
-    start_of_month = today.replace(day=1)
-    # 현재 날짜로부터 이번 달의 마지막 날짜를 계산
-    _, last_day_of_month = calendar.monthrange(today.year, today.month)
+        start_of_week = today - timedelta(days=6)
+        end_of_week = today
+        
+        # 이번 주의 모든 메뉴 합계(AVG를 구하기 위해)
+        weekly_nutrition = UserFoodNutritions.objects.filter(
+            user=user, datetime__date__range=[start_of_week, end_of_week]
+        ).aggregate(
+            total_energy=Sum('nutrition_info__energy'),
+            total_carbohydrate=Sum('nutrition_info__carbohydrate'),
+            total_protein=Sum('nutrition_info__protein'),
+            total_fat=Sum('nutrition_info__fat'),
+        )
+        
 
-    # 이번 달의 마지막 날짜로 설정
-    end_of_month = today.replace(day=last_day_of_month)
+        start_of_month = today.replace(day=1)
+        # 현재 날짜로부터 이번 달의 마지막 날짜를 계산
+        _, last_day_of_month = calendar.monthrange(today.year, today.month)
 
-    # 이번 달의 모든 메뉴 합계(AVG를 구하기 위해)
-    monthly_nutrition = UserFoodNutritions.objects.filter(
-        user=user, datetime__date__range=[start_of_month, end_of_month]
-    ).aggregate(
-        total_energy=Sum('nutrition_info__energy'),
-        total_carbohydrate=Sum('nutrition_info__carbohydrate'),
-        total_protein=Sum('nutrition_info__protein'),
-        total_fat=Sum('nutrition_info__fat'),
-    )
+        # 이번 달의 마지막 날짜로 설정
+        end_of_month = today.replace(day=last_day_of_month)
 
-    # 주간/월간 평균 계산
-    num_days_in_week = (end_of_week - start_of_week).days + 1
-    num_days_in_month = (end_of_month - start_of_month).days + 1
+        # 이번 달의 모든 메뉴 합계(AVG를 구하기 위해)
+        monthly_nutrition = UserFoodNutritions.objects.filter(
+            user=user, datetime__date__range=[start_of_month, end_of_month]
+        ).aggregate(
+            total_energy=Sum('nutrition_info__energy'),
+            total_carbohydrate=Sum('nutrition_info__carbohydrate'),
+            total_protein=Sum('nutrition_info__protein'),
+            total_fat=Sum('nutrition_info__fat'),
+        )
 
-    # 주간 합계를 기간으로 나누어 하루에 어떤 영양소를 평균적으로 얼마나 섭취하는지 계산
-    weekly_nutrition_avg = {
-        'avg_energy': weekly_nutrition['total_energy'] / num_days_in_week,
-        'avg_carbohydrate': weekly_nutrition['total_carbohydrate'] / num_days_in_week,
-        'avg_protein': weekly_nutrition['total_protein'] / num_days_in_week,
-        'avg_fat': weekly_nutrition['total_fat'] / num_days_in_week,
-    }
-    # 월간 합계를 기간으로 나누어 하루에 어떤 영양소를 평균적으로 얼마나 섭취하는지 계산
-    monthly_nutrition_avg = {
-        'avg_energy': monthly_nutrition['total_energy'] / num_days_in_month,
-        'avg_carbohydrate': monthly_nutrition['total_carbohydrate'] / num_days_in_month,
-        'avg_protein': monthly_nutrition['total_protein'] / num_days_in_month,
-        'avg_fat': monthly_nutrition['total_fat'] / num_days_in_month,
-    }
+        # 일주일 동안 게시글을 업로드한 날짜 count
+        post = Post.objects.filter(user=user, post_time__range=(start_of_week, end_of_week))
+        weekly_post_count = post.values('post_time__date').distinct().count()
+        # 해당 월 동안 게시글을 업로드한 날짜 count
+        post = Post.objects.filter(user=user, post_time__range=(start_of_month, end_of_month))
+        monthly_post_count = post.values('post_time__date').distinct().count()
+        
+        # 주간 합계를 기간으로 나누어 하루에 어떤 영양소를 평균적으로 얼마나 섭취하는지 계산
+        weekly_nutrition_avg = {
+            'avg_energy': weekly_nutrition['total_energy'] / weekly_post_count,
+            'avg_carbohydrate': weekly_nutrition['total_carbohydrate'] / weekly_post_count,
+            'avg_protein': weekly_nutrition['total_protein'] / weekly_post_count,
+            'avg_fat': weekly_nutrition['total_fat'] / weekly_post_count,
+        }
+        # 월간 합계를 기간으로 나누어 하루에 어떤 영양소를 평균적으로 얼마나 섭취하는지 계산
+        monthly_nutrition_avg = {
+            'avg_energy': monthly_nutrition['total_energy'] / monthly_post_count,
+            'avg_carbohydrate': monthly_nutrition['total_carbohydrate'] / monthly_post_count,
+            'avg_protein': monthly_nutrition['total_protein'] / monthly_post_count,
+            'avg_fat': monthly_nutrition['total_fat'] / monthly_post_count,
+        }
+    except :
+        return 0, 0, 0, 0
 
-    return daily_nutrition, weekly_nutrition_avg, monthly_nutrition_avg
+    return daily_nutrition, weekly_nutrition_avg, monthly_nutrition_avg, start_of_week
