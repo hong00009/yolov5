@@ -6,10 +6,11 @@ from django.core.paginator import Paginator
 import logging
 from django.db.models.functions import ExtractWeek
 from uuid import uuid4 # 고유번호 생성
-from datetime import timedelta
 import os
 from django.forms import modelformset_factory
 from urllib.parse import urlencode
+from datetime import datetime, time
+from django.utils import timezone
 # ▲ 기본 라이브러리만
 
 # ▼ 자체 제작
@@ -56,12 +57,9 @@ def upload_post(request):
 
             return redirect('yolov5_django:detail_post', post_id=post.id)
         if not form.is_valid():
-            print(form.errors)
-            print(form['title'].errors)
+            print('업로드 valid 에러',form['title'].errors)
     else:
-        form = PostForm()
-        logger.error("%s", form.errors)
-        
+        form = PostForm()   
     
     context = {'form': form}
     return render(request, 'yolov5_django/upload_post.html', context)
@@ -73,11 +71,11 @@ def my_page(request):
     
     posts = Post.objects.filter(user=request.user).order_by('-post_time')
 
-    postw = Post.objects.annotate(week=ExtractWeek('post_time')).order_by('week')
-    total_posts = Post.objects.filter(user=request.user).count()
+    total_posts = posts.count()
 
     filter_O = False
 
+    # 날짜필터폼
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
@@ -87,8 +85,8 @@ def my_page(request):
             filter_O = True
 
         if end_date:
-            end_date += timedelta(days=1)
-            end_date -= timedelta(seconds=1)
+            # end_date와 23시59분59초를 더함 (그날의 가장 마지막 시간으로 설정) timezone-aware 형식으로 저장
+            end_date = timezone.make_aware(datetime.combine(end_date, time.max))
             posts = posts.filter(post_time__lte=end_date)
             filter_O = True
 
@@ -99,15 +97,13 @@ def my_page(request):
     page_number = request.GET.get('page')
     posts = paginator.get_page(page_number)
 
-    # 필터적용이후 페이지 넘길때 예외처리
-
+    # 필터적용이후 페이지 넘길때도 필터 지속 적용
     current_params = request.GET.copy()
     base_url = f"/my_page/?{urlencode(current_params)}"
 
     context = {
         'posts': posts,
         'form': form,
-        'postw': postw,
         'filter_O': filter_O,
         'total_posts_count': total_posts,
         'filtered_posts_count' : filtered_posts,
@@ -176,8 +172,6 @@ def delete_post(request, post_id):
 def detail_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
-    print('**', post.user,'의 detection_result:', post.detection_result)
-    
     food_name_list, nutrition_info_list, total_chart_info_json, each_chart_info_json, percentage = food_info(post)
 
     context = {

@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from datetime import datetime
+from django.utils import timezone
 
 # Create your models here.
 class Post(models.Model):
@@ -8,7 +9,8 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     text_content = models.TextField(max_length=255, blank=True)
     image = models.ImageField()
-    post_time = models.DateTimeField(default=datetime.now)
+    post_time = models.DateTimeField(default=timezone.now)
+    # post_time = models.DateTimeField(default=datetime.now)
     hour = models.IntegerField(default=0)
 
     detection_result = models.TextField(blank=True, null=True)
