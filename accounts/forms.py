@@ -43,6 +43,7 @@ class UserProfileForm(forms.ModelForm):
             'birthdate': forms.DateInput(attrs={'type': 'date', 
                                                 'value': '2000-01-01'}),
         }
+        
 
 class UserNutritionsEditForm(forms.ModelForm):
     nutrition_info = forms.ModelChoiceField(queryset=FoodNutrition.objects.all(), label='')

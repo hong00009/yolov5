@@ -3,10 +3,12 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from datetime import timedelta
 
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm
 from .models import UserProfile
 from .personal_nutrition import bmi_calculator, stats
+from yolov5_django.models import Post
 
 # Create your views here.
 
@@ -53,7 +55,7 @@ def logout(request):
 @login_required
 def profile(request):
     user = request.user
-
+    post = Post.objects.filter(user=request.user)
     try:
         # 프로필이 있는지 확인
         profile = UserProfile.objects.get(user=user)
@@ -79,7 +81,11 @@ def profile(request):
     else:
         form = UserProfileForm(instance=profile)
 
-    daily_nutrition, weekly_nutrition, monthly_nutrition = stats(user)
+    daily_nutrition, weekly_nutrition, monthly_nutrition, start_of_week = stats(user)
+
+    today = timezone.now().date()
+    # 10살 제한
+    age_limit = today - timedelta(days=365 * 11)
 
     context = {
         'user': user,
@@ -94,6 +100,11 @@ def profile(request):
         'daily_nutrition': daily_nutrition,
         'weekly_nutrition': weekly_nutrition,
         'monthly_nutrition': monthly_nutrition,
+        'start_of_week': start_of_week,
+        'today': today,
+        'age_limit': age_limit,
+        'post': post,
+
     }
 
     return render(request, 'accounts/profile.html', context)
