@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load tz %}
 
 <div class="row mt-5">
   <div class="col-6">
@@ -21,13 +22,14 @@
 
             </div>
             <div class="mb-3">
-                <input type="date" id="date" name="post_time" value="{{post.post_time.date|date:'Y-m-d'}}" required>
+                <input type="date" id="date" name="post_time" value="{{ post.post_time|timezone:'Asia/Seoul'|date:'Y-m-d' }}" required>
                 {{ form.hour }}시
             </div>
           </div>
           {% if post.detection_result is not None %}
           <div class="col-6">
             <h4>음식 수정</h4>
+            <p>다른 음식으로 잘못 등록되었다면 수정 및 삭제할 수 있습니다</p>
             <p>{{ nutrition_edit_form.as_p }}</p>
             <p>{{ form.delete }}</p>
           </div>

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Post
-from django.utils.timezone import now
+from django.utils import timezone
 from datetime import datetime, timedelta
 from django.forms import DateInput
 
@@ -19,7 +19,8 @@ class PostForm(forms.ModelForm):
         )    
 
     post_time = forms.DateField(
-        initial=datetime.now().date(),
+        initial=timezone.now().date(), # timezone-aware 형태로 수정
+        # initial=datetime.now().date(),
         widget=DateInput(attrs={'type': 'date'}),
         label='날짜',
     )
@@ -38,13 +39,15 @@ class PostForm(forms.ModelForm):
         hour = cleaned_data.get('hour')
 
         if post_time is not None and hour is not None:
-            try:
-             
+            try: # post_time의 0시0분0초값 + hour값
                 post_time = datetime.combine(post_time, datetime.min.time()) + timedelta(hours=int(hour))
+                post_time = timezone.make_aware(post_time) # timezone-aware 형태로 변환
             except ValueError:
                 raise forms.ValidationError('Invalid date or time')
 
             cleaned_data['post_time'] = post_time
+
+        return cleaned_data
 
 
 class EditPostForm(forms.ModelForm):
@@ -59,16 +62,31 @@ class EditPostForm(forms.ModelForm):
     HOUR_CHOICES = [(str(hour), str(hour)) for hour in range(24)]
     hour = forms.ChoiceField(choices=HOUR_CHOICES)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        post_time = cleaned_data.get('post_time')
+        hour = cleaned_data.get('hour')
+
+        if post_time is not None and hour is not None:
+            try: # post_time의 0시0분0초값 + hour값
+                date_hour = datetime.combine(post_time, datetime.min.time()) + timedelta(hours=int(hour))
+                post_time = timezone.make_aware(date_hour) # timezone-aware 형태로 변환
+            except ValueError:
+                raise forms.ValidationError('Invalid date or time')
+
+            cleaned_data['post_time'] = post_time
+
+        return cleaned_data
 
 
 class DateRangeFilterForm(forms.Form):
     start_date = forms.DateField(
         label='시작 날짜',
         required=False,
-        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date(), 'class': 'custom-date-input'})
+        widget=forms.TextInput(attrs={'type': 'date', 'value': timezone.now().date(), 'class': 'custom-date-input'})
     )
     end_date = forms.DateField(
         label='마지막 날짜',
         required=False,
-        widget=forms.TextInput(attrs={'type': 'date', 'value': now().date(), 'class': 'custom-date-input'})
+        widget=forms.TextInput(attrs={'type': 'date', 'value': timezone.now().date(), 'class': 'custom-date-input'})
     )

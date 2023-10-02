@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
 {% if user.is_authenticated %}
 
 <br>
@@ -24,6 +25,7 @@
         <p>{{ user }}님의 식단일지</p>
     {% else %}
         <p> 식단일지를 등록해주세요.</p>
+        <img src="{% static 'images/guide.png' %}" alt="">
     {% endif %}
 </div>
 

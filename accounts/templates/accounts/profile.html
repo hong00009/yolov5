@@ -69,19 +69,19 @@
 
 
 
-            <div class="bg-secondary p-3">
+            <div class="bg-light p-3 mt-4">
 
-                <h4>일간 영양 통계 (오늘)</h4>
+                <h4>{% now "m월 d일" %}의 영양 통계</h4>
                     <p>총 열량: {{ daily_nutrition.total_energy|floatformat:"1" }} kcal</p>
                     <p>총 탄수화물: {{ daily_nutrition.total_carbohydrate|floatformat:"1" }} g</p>
                     <p>총 단백질: {{ daily_nutrition.total_protein|floatformat:"1" }} g</p>
                     <p>총 지방: {{ daily_nutrition.total_fat|floatformat:"1" }} g</p>
-                <h4>주간 영양 통계 (지난 7일간)</h4>
+                <h4>한 주간의 영양 통계 (지난 7일간)</h4>
                     <p>평균 열량: {{ weekly_nutrition.avg_energy|floatformat:"1" }} kcal</p>
                     <p>평균 탄수화물: {{ weekly_nutrition.avg_carbohydrate|floatformat:"1" }} g</p>
                     <p>평균 단백질: {{ weekly_nutrition.avg_protein|floatformat:"1" }} g</p>
                     <p>평균 지방: {{ weekly_nutrition.avg_fat|floatformat:"1" }} g</p>
-                <h4>월간 영양 통계 (이번 달)</h4>
+                <h4>{% now "m월" %}의 영양 통계</h4>
                     <p>평균 열량: {{ monthly_nutrition.avg_energy|floatformat:"1" }} kcal</p>
                     <p>평균 탄수화물: {{ monthly_nutrition.avg_carbohydrate|floatformat:"1" }} g</p>
                     <p>평균 단백질: {{ monthly_nutrition.avg_protein|floatformat:"1" }} g</p>

@@ -16,7 +16,7 @@ def y_detect(img_path):
     print('**객체검출 size:',size)
 
     model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolov5_model/yolov5L_best.pt')
-    results = model(img_path, size=size)
+    results = model(img_path, size=1600)
 
     detections = results.xyxy[0] 
     # detections[:,5] => tensor([ 1.,  50., 127.])
