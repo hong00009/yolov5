@@ -122,7 +122,7 @@ def bmi_calculator(user):
 # 한 끼 권장칼로리 : 530kcal
 
 def stats(user):
-    today = timezone.now().date()
+    today = timezone.now()
     
     try:
         # ★일간수치 계산 : 오늘 기준으로 통계량 계산
