@@ -46,9 +46,18 @@ class UserProfileForm(forms.ModelForm):
         
 
 class UserNutritionsEditForm(forms.ModelForm):
-    nutrition_info = forms.ModelChoiceField(queryset=FoodNutrition.objects.all(), label='')
+    nutrition_info  = forms.ModelChoiceField(queryset=FoodNutrition.objects.all(), label='변경')
     delete = forms.BooleanField(required=False, label='삭제')
 
     class Meta:
         model = UserFoodNutritions
         fields = ['nutrition_info', 'delete']
+
+class AddFoodForm(forms.Form):
+    add_food = forms.ModelChoiceField(queryset=FoodNutrition.objects.all(), required=False, label='추가')
+    
+    def clean_add_food(self):
+        add_food = self.cleaned_data.get('add_food')
+        if not add_food:  # 입력값이 없거나 None인 경우
+            raise forms.ValidationError("음식을 입력해주세요.")
+        return add_food

@@ -3,7 +3,11 @@
 import json
 
 def chart(nutrition_info_list):
-
+    
+    # 음식 정보 없을때, 빈값 반환
+    if not nutrition_info_list:
+        return json.dumps({}), json.dumps({}), 0
+    
     total_nutrition_3 = { # 모든 음식 탄단지 합산
         'carbohydrate': 0,
         'protein': 0,
