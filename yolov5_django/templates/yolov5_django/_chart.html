@@ -269,9 +269,6 @@
 
 <!--영양정보 글자 출력부-->
 
-
-
-
 <div class="center">
   <ol id="foodList">
     {% if percentage.carbohydrate > 65 and percentage.fat > 30 %}
@@ -280,7 +277,7 @@
       <p>탄수화물의 비중이 너무 높습니다.</p>
     {% elif percentage.fat > 30 %}
       <p>지방의 비중이 너무 높습니다.</p>
-    {% elif percentage.carbohydrate == 0 and percentage.protein == 0 and percentage.fat == 0  %}
+    {% elif percentage == 0  %}
       <p></p>
     {% else %}
       <p>영양소 비율이 적절합니다.</p>

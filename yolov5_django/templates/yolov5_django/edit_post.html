@@ -26,15 +26,65 @@
                 {{ form.hour }}시
             </div>
           </div>
-          {% if post.detection_result is not None %}
+          <!--객체탐지 O, 음식 O-->
+          {% if post.detection_result is not None and no_food_state is False %}
           <div class="col-6">
+            {{ nutrition_edit_form.management_form }}
             <h4>음식 수정</h4>
-            <p>다른 음식으로 잘못 등록되었다면 수정 및 삭제할 수 있습니다</p>
-            <p>{{ nutrition_edit_form.as_p }}</p>
-            <p>{{ form.delete }}</p>
+            <p>다른 음식으로 잘못 등록되었다면 수정 및 삭제할 수 있습니다.</p>
+              {% for form in nutrition_edit_form.forms %}  
+                  {{ form.id }}
+                  {{ form.DELETE }}  
+                  
+                  <p>{{ form.nutrition_info }} 삭제: {{ form.delete }}</p>
+              {% endfor %}
+              <br>
+              {% if nutrition_edit_form.forms %}
+                <!-- 음식 추가 -->
+                <h4>음식 추가</h4>
+                <p>{{ add_food_form.add_food }}</p>
+              {% endif %}
           </div>
           {% endif %}
-          
+
+          <!-- 음식 객체 탐지되지 않음 -->
+          {% if post.detection_result is None and no_food_state %}
+          <div class="col-6">
+            <h4>음식 추가</h4>
+            <p>음식이 검출되지 않았다면 새로 추가할 수 있습니다. </p>
+            <p>{{ add_food_form.add_food }}</p>
+          </div>
+          {% endif %}
+
+          <!--음식 객체는 탐지 됐는데, 사용자가 음식을 다 삭제함-->
+          {% if post.detection_result is not None and no_food_state %}
+          <div class="col-6">
+            <h4>음식 추가</h4>
+            <p>다른 음식으로 잘못 등록되었다면 새로 추가할 수 있습니다.</p>
+            <p>{{ add_food_form.add_food }}</p>
+          </div>
+          {% endif %}
+
+          <!--음식 객체는 탐지안됐는데, 사용자가 음식을 추가함-->
+          {% if post.detection_result is None and no_food_state is False %}
+          <div class="col-6">
+            {{ nutrition_edit_form.management_form }}
+            <h4>음식 수정</h4>
+            <p>등록된 음식 정보를 수정 및 삭제할 수 있습니다.</p>
+              {% for form in nutrition_edit_form.forms %}  
+                  {{ form.id }}
+                  {{ form.DELETE }}  
+                  
+                  <p>{{ form.nutrition_info }} 삭제: {{ form.delete }}</p>
+              {% endfor %}
+              <br>
+              {% if nutrition_edit_form.forms %}
+                <!-- 음식 추가 -->
+                <h4>음식 추가</h4>
+                <p>{{ add_food_form.add_food }}</p>
+              {% endif %}
+          </div>
+          {% endif %}
           <div class="col-12 text-left mt-3">
           <button type="submit" class="btn btn-primary">수정</button>
           </div>
